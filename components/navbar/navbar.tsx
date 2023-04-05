@@ -1,24 +1,19 @@
 import Image from 'next/image';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
 import styles from "./navbar.module.scss";
 import {
     AppBar,
     Avatar,
-    Button,
     IconButton,
     Link,
-    Tab,
-    Tabs,
     Toolbar,
+    Tooltip,
     Typography,
     useMediaQuery,
     useTheme,
 } from "@mui/material";
 import DrawerComp from "./drawer";
-import AddBusinessRoundedIcon from "@mui/icons-material/AddBusinessRounded";
-import React, { useState } from 'react';
+import React from 'react';
+import AccountMenu from './accountMenu';
 
 export default function CustomNavbar() {
 
@@ -28,28 +23,27 @@ export default function CustomNavbar() {
     const isMatch = useMediaQuery(theme.breakpoints.down("md"));
     console.log(isMatch);
 
+
     return (
         <React.Fragment>
             <AppBar className={styles.CustomNavbar}>
                 <Toolbar>
                     { isMatch ? (
-                        <>
+                        <div style={{display: "grid", width: "100%", justifyItems: "center"}}>
                             <Typography sx={{ fontSize: "2rem", color: "black"}}>
                                 IDEA SHARE
                             </Typography>
                             <DrawerComp />
-                        </>
+                        </div>
                     ) : (
                         <>
-                            <Link href="/">
-                                <Image src="/Logo.png" alt="Logo" width={60} height={60} style={{marginTop: "15%", marginBottom: "15%",}}/>
+                            <Link href="/" style={{marginTop: "10px", marginBottom: "10px",}}>
+                                <Image src="/Logo.png" alt="Logo" width={60} height={60}/>
                             </Link>
                             <Typography sx={{ fontSize: "1.5rem", marginLeft: "1%", color: "black"}}>
                                     IDEA SHARE
                             </Typography>
-                            <IconButton sx={{ marginLeft: "auto" }}>
-                                <Avatar src="/Logo.png"/>
-                            </IconButton>  
+                            <AccountMenu />
                         </>
                     )}
                 </Toolbar>
