@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 import {
+    Avatar,
+    Divider,
     Drawer,
     IconButton,
     List,
+    ListItem,
     ListItemButton,
     ListItemIcon,
     ListItemText,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import LogoutIcon from '@mui/icons-material/Logout';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
-
-const pages = ["Sign out"];
 export default function DrawerComp()  {
     const [openDrawer, setOpenDrawer] = useState(false);
 
@@ -22,17 +25,30 @@ export default function DrawerComp()  {
                 onClose={() => setOpenDrawer(false)}
             >
                 <List>
-                    {pages.map((page, index) => (
-                        <ListItemButton key={index}>
-                        <ListItemIcon>
-                            <ListItemText>{page}</ListItemText>
+                    <ListItem>
+                        <ListItemIcon style={{alignItems: "center"}}>
+                            <Avatar src="/Logo.png"/>
+                            <ListItemText style={{paddingLeft: "5px", color: "black"}}>arjun.patel23@utexas.edu</ListItemText>
                         </ListItemIcon>
-                        </ListItemButton>
-                    ))}
+                    </ListItem>
+                    
+                    <Divider />
+
+                    <ListItemButton>
+                        <ListItemIcon style={{alignItems: "center"}}>
+                            <LogoutIcon style={{marginLeft: "10px"}}/>
+                            <ListItemText style={{paddingLeft: "10px"}}>Logout</ListItemText>
+                        </ListItemIcon>
+                    </ListItemButton>
+                    <ListItemButton>
+                        <ListItemIcon onClick={() => setOpenDrawer(!openDrawer)} style={{alignItems: "center", justifyContent: "center", width: "100%"}}>
+                            <ExpandLessIcon />
+                        </ListItemIcon>
+                    </ListItemButton>
                 </List>
             </Drawer>
             <IconButton
-                sx={{ color: "white", marginLeft: "auto" }}
+                sx={{ color: "white"}}
                 onClick={() => setOpenDrawer(!openDrawer)}
             >
                 <MenuIcon sx={{color: "black"}}/>
