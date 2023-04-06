@@ -3,7 +3,11 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  padding: 6rem;
+  padding-top: 5.5rem;
+  padding-left: 0rem;
+  overflow: hidden;
+  /* width: 100%; */
+  /* display: inline-block; */
   min-height: 100vh;
 }
 
