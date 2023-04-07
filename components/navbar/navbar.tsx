@@ -2,11 +2,8 @@ import Image from 'next/image';
 import styles from "./navbar.module.scss";
 import {
     AppBar,
-    Avatar,
-    IconButton,
     Link,
     Toolbar,
-    Tooltip,
     Typography,
     useMediaQuery,
     useTheme,
