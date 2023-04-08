@@ -2,6 +2,7 @@ import {
     Box, 
     Button, 
     Card, 
+    Container, 
     Dialog, 
     DialogActions, 
     DialogContent, 
@@ -21,6 +22,8 @@ import {
     ThemeProvider, 
     Typography, 
     createTheme,
+    useMediaQuery,
+    useTheme,
 } from "@mui/material";
 import { styled } from '@mui/system';
 import AddIcon from '@mui/icons-material/Add';
@@ -54,7 +57,7 @@ declare module '@mui/material/TextField' {
 const { palette } = createTheme();
 const { augmentColor } = palette;
 const createColor = (mainColor: string) => augmentColor({ color: { main: mainColor } });
-const theme = (createTheme as any)({
+const themeView = createTheme({
     palette: {
         post: createColor('#DF9090'),
     }
@@ -70,19 +73,21 @@ const MyTextField = styled(TextField)({
 });
 
 const MyFormControl = styled(FormControl)({
-    "& .Mui-focused" : {
+    ".Mui-focused" : {
         color: "#DF9090"
     }
 })
 
 const MyRadioGroup = styled(RadioGroup)({
-    "& .Mui-checked": {
+    ".Mui-checked": {
         color: "#DF9090",
     },
 })
 
-
 export default function Dashboard() {
+
+    const theme = useTheme();
+    const isMatch = useMediaQuery(theme.breakpoints.down("md"));
 
     const [open, setOpen] = useState(false);
     const [formDisplay, setFormDisplay] = useState(false);
@@ -112,38 +117,72 @@ export default function Dashboard() {
 
     return (
         <React.Fragment>
-            <ThemeProvider theme={theme}>
-                <Grid container spacing={0} width={"100%"} overflow={"hidden"}>
-                    <Grid item xs={3} sx={{marginTop: "8vh", width: "100%", height: "auto"}}>
-                        <CustomNavpanel />
-                    </Grid>
-                    
-                    <Grid xs={6} sx={{width: "100%", paddingX:"1%"}}>
-                        <List className={style.invisiScroll} style={{marginTop: "10vh", maxHeight: "80vh", overflow: 'auto', justifyContent: "center", width: "100%", borderRadius: 3}}>
-                            {CARDS.map((card, index) => (
-                                <div key={index} style={{paddingTop: "10px"}}>
-                                    <Card sx={{height: "300px",}}>
-                                        {card}
-                                    </Card>
-                                </div>
-                            ))}
-                        </List>
-                    </Grid>
+            <ThemeProvider theme={themeView}>
+                {!isMatch ? (
+                    <Grid container spacing={0} width={"100%"} overflow={"hidden"}>
+                        <Grid item xs={3} sx={{marginTop: "8vh", width: "100%", height: "auto"}}>
+                            <CustomNavpanel />
+                        </Grid>
+                        
+                        <Grid item xs={6} sx={{width: "100%", paddingX:"1%"}}>
+                            <List className={style.invisiScroll} style={{marginTop: "10vh", maxHeight: "80vh", overflow: 'auto', justifyContent: "center", width: "100%", borderRadius: 3}}>
+                                {CARDS.map((card, index) => (
+                                    <div key={index} style={{paddingTop: "10px"}}>
+                                        <Card sx={{height: "300px",}}>
+                                            {card}
+                                        </Card>
+                                    </div>
+                                ))}
+                            </List>
+                        </Grid>
 
-                    <Grid xs={3} sx={{paddingRight: "2%", paddingLeft: "1%", marginTop: "10vh", width: "100%", height: "auto", textAlign: "center"}}>
-                        <Button 
-                            variant="contained" 
-                            color="post" 
-                            sx={{color: "white", textTransform: "capitalize", padding: "3% 10%"}}
-                            onClick={handleOpen}
-                        >
-                            <AddIcon fontSize="small"/>
-                            <Typography fontWeight={"medium"}>
-                                Post a New Idea
-                            </Typography>
-                        </Button>
+                        <Grid item xs={3} sx={{paddingRight: "2%", paddingLeft: "1%", marginTop: "10vh", width: "100%", height: "auto", textAlign: "center"}}>
+                            <Button 
+                                variant="contained" 
+                                color="post" 
+                                sx={{color: "white", textTransform: "capitalize", padding: "3% 10%"}}
+                                onClick={handleOpen}
+                            >
+                                <AddIcon fontSize="small"/>
+                                <Typography fontWeight={"medium"}>
+                                    Post a New Idea
+                                </Typography>
+                            </Button>
+                        </Grid>
                     </Grid>
-                </Grid>
+                ) : (
+                    <Container sx={{width: "100%"}}>
+                        <CustomNavpanel />
+
+                        <Container sx={{textAlign: "end", position: "fixed", zIndex: 3, marginTop: "70vh", paddingRight: "8.5%"}}>
+                            <Button 
+                                variant="contained" 
+                                color="post" 
+                                sx={{color: "white", textTransform: "capitalize", borderRadius: 300}}
+                                onClick={handleOpen}
+                            >
+                                    <AddIcon fontSize="large"/>
+                            </Button>
+                        </Container>
+
+                        <Grid container spacing={0} width={"100%"} overflow={"hidden"} justifyContent="center">
+                            <Grid item xs={10} sx={{width: "100%", paddingX:"1%"}}>
+                                <List className={style.invisiScroll} style={{marginTop: "2vh", maxHeight: "80vh", overflow: 'auto', justifyContent: "center", width: "100%", borderRadius: 3}}>
+                                    {CARDS.map((card, index) => (
+                                        <div key={index} style={{paddingTop: "10px"}}>
+                                            <Card sx={{height: "300px",}}>
+                                                {card}
+                                            </Card>
+                                        </div>
+                                    ))}
+                                </List>
+                            </Grid>
+                        </Grid>
+
+                        
+                    </Container>
+                )}
+                
 
                 <Dialog 
                     open={open} 
