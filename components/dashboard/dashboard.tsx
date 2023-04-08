@@ -13,6 +13,7 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import React from "react";
 import style from "./dashboard.module.scss"
+import CustomNavpanel from "../navpanel/navpanel";
 
 const CARDS = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30];
 
@@ -45,11 +46,10 @@ export default function Dashboard() {
         <React.Fragment>
             <ThemeProvider theme={theme}>
                 <Grid container spacing={0} width={"100%"} overflow={"hidden"}>
-                    <Grid item xs={3} sx={{paddingTop: "10%", width: "100%", height: "auto"}}>
-                        <Card>
-                            xs = 3
-                        </Card>
+                    <Grid item xs={3} sx={{marginTop: "8vh", width: "100%", height: "auto"}}>
+                        <CustomNavpanel />
                     </Grid>
+                    
                     <Grid xs={6} sx={{width: "100%", paddingX:"1%"}}>
                         <List className={style.invisiScroll} style={{marginTop: "10vh", maxHeight: "80vh", overflow: 'auto', justifyContent: "center", width: "100%", borderRadius: 3}}>
                             {CARDS.map((card, index) => (
@@ -61,9 +61,10 @@ export default function Dashboard() {
                             ))}
                         </List>
                     </Grid>
-                    <Grid xs={3} sx={{padding: "0 2% 0 1%", marginTop: "10vh",width: "100%", height: "auto", textAlign: "center"}}>
+
+                    <Grid xs={3} sx={{paddingRight: "2%", paddingLeft: "1%", marginTop: "10vh", width: "100%", height: "auto", textAlign: "center"}}>
                         <Button variant="contained" color="post" sx={{color: "white", textTransform: "capitalize", padding: "3% 10%"}}>
-                        <AddIcon fontSize="small"/>
+                            <AddIcon fontSize="small"/>
                             <Typography fontWeight={"medium"}>
                                 Post a New Idea
                             </Typography>
