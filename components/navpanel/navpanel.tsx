@@ -7,6 +7,7 @@ import {
     Typography, 
     createMuiTheme
 } from "@mui/material";
+import { styled } from '@mui/system';
 import HomeIcon from '@mui/icons-material/Home';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
@@ -30,6 +31,29 @@ const NAVLINKS = [
         icon: <BookmarkIcon sx={{marginRight: "7%", opacity: "100%"}}/>,
     }
 ];
+
+const MyMenuItem = styled(MenuItem)({
+    "&.Mui-selected": {
+        backgroundColor: "rgba(233,144,144,.2)",
+        color: "#DF9090",
+        stroke: "#DF9090",
+        borderLeft: "solid",
+        borderLeftWidth: 7,
+    },
+    "&.Mui-focused": {
+    backgroundColor: "#DF9090"
+    },
+    "&.Mui-focusVisible": {
+        backgroundColor: "#DF9090"
+    },
+    "&.Mui-active": {
+        backgroundColor: "#DF9090"
+    },
+    "&.Mui-selected:hover": {
+        backgroundColor: "rgba(233,144,144,.2)",
+        color: "#DF9090",
+    }
+})
 
 export default function CustomNavpanel() {
 
@@ -56,41 +80,19 @@ export default function CustomNavpanel() {
                             </ListItemText>
                         </ListItem>
                     :
-                            <MenuItem 
-                                key={index}
-                                selected={index === selectedIndex}
-                                onClick={(event) => handleNavItemClick(event, index)}
-                                sx={{
-                                    paddingY: "4%",
-                                    "&.Mui-selected": {
-                                        backgroundColor: "rgba(233,144,144,.2)",
-                                        color: "#DF9090",
-                                        stroke: "#DF9090",
-                                        borderLeft: "solid",
-                                        borderLeftWidth: 7,
-                                    },
-                                    "&.Mui-focused": {
-                                    backgroundColor: "#DF9090"
-                                    },
-                                    "&.Mui-focusVisible": {
-                                        backgroundColor: "#DF9090"
-                                    },
-                                    "&.Mui-active": {
-                                        backgroundColor: "#DF9090"
-                                    },
-                                    "&.Mui-selected:hover": {
-                                        backgroundColor: "rgba(233,144,144,.2)",
-                                        color: "#DF9090",
-                                    }
-                                }}
-                            >
-                                <ListItemText>
-                                    <Typography sx={{display: "flex", alignItems: "center", fontWeight: "bold"}}>
-                                        {link.icon}
-                                        {link.label}
-                                    </Typography>
-                                </ListItemText>
-                            </MenuItem>
+                        <MyMenuItem 
+                            key={index}
+                            selected={index === selectedIndex}
+                            onClick={(event) => handleNavItemClick(event, index)}
+                            sx={{ paddingY: "4%" }}
+                        >
+                            <ListItemText>
+                                <Typography sx={{display: "flex", alignItems: "center", fontWeight: "bold"}}>
+                                    {link.icon}
+                                    {link.label}
+                                </Typography>
+                            </ListItemText>
+                        </MyMenuItem>
                 ))}
 
             </MenuList>
