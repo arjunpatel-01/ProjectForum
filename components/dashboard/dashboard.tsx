@@ -2,18 +2,32 @@ import {
     Box, 
     Button, 
     Card, 
+    Dialog, 
+    DialogActions, 
+    DialogContent, 
+    DialogContentText, 
+    DialogTitle, 
+    FormControl, 
+    FormControlLabel, 
+    FormLabel, 
     Grid, 
     List, 
+    Modal, 
     PaletteColorOptions, 
     Paper, 
+    Radio, 
+    RadioGroup, 
+    TextField, 
     ThemeProvider, 
     Typography, 
-    createTheme 
+    createTheme,
 } from "@mui/material";
+import { styled } from '@mui/system';
 import AddIcon from '@mui/icons-material/Add';
-import React from "react";
+import React, { useState } from "react";
 import style from "./dashboard.module.scss"
 import CustomNavpanel from "../navpanel/navpanel";
+
 
 const CARDS = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30];
 
@@ -31,17 +45,71 @@ declare module '@mui/material/Button' {
     }
 }
 
+declare module '@mui/material/TextField' {
+    interface TextFieldPropsColorOverrides {
+        post: true;
+    }
+}
+
 const { palette } = createTheme();
 const { augmentColor } = palette;
 const createColor = (mainColor: string) => augmentColor({ color: { main: mainColor } });
-const theme = createTheme({
+const theme = (createTheme as any)({
     palette: {
         post: createColor('#DF9090'),
+    }
+});
+
+const MyTextField = styled(TextField)({
+    '& label.Mui-focused': {
+        color: '#DF9090',
+    },
+    '& .MuiInput-underline:after': {
+        borderBottomColor: '#DF9090',
     },
 });
 
+const MyFormControl = styled(FormControl)({
+    "& .Mui-focused" : {
+        color: "#DF9090"
+    }
+})
+
+const MyRadioGroup = styled(RadioGroup)({
+    "& .Mui-checked": {
+        color: "#DF9090",
+    },
+})
+
 
 export default function Dashboard() {
+
+    const [open, setOpen] = useState(false);
+    const [formDisplay, setFormDisplay] = useState(false);
+    const [description, setDescription] = useState("");
+
+    const handleChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        setDescription(event.target.value);
+    }
+
+    const handleOpen = () => {
+        setOpen(true);
+    }
+
+    const handleClose = () => {
+        setOpen(false);
+        setFormDisplay(false);
+        setDescription("");
+    }
+
+    const handleFormOn = () => {
+        setFormDisplay(true);
+    }
+
+    const handleFormOff = () => {
+        setFormDisplay(false);
+    }
+
     return (
         <React.Fragment>
             <ThemeProvider theme={theme}>
@@ -53,8 +121,8 @@ export default function Dashboard() {
                     <Grid xs={6} sx={{width: "100%", paddingX:"1%"}}>
                         <List className={style.invisiScroll} style={{marginTop: "10vh", maxHeight: "80vh", overflow: 'auto', justifyContent: "center", width: "100%", borderRadius: 3}}>
                             {CARDS.map((card, index) => (
-                                <div style={{paddingTop: "10px"}}>
-                                    <Card key={index} sx={{height: "300px",}}>
+                                <div key={index} style={{paddingTop: "10px"}}>
+                                    <Card sx={{height: "300px",}}>
                                         {card}
                                     </Card>
                                 </div>
@@ -63,7 +131,12 @@ export default function Dashboard() {
                     </Grid>
 
                     <Grid xs={3} sx={{paddingRight: "2%", paddingLeft: "1%", marginTop: "10vh", width: "100%", height: "auto", textAlign: "center"}}>
-                        <Button variant="contained" color="post" sx={{color: "white", textTransform: "capitalize", padding: "3% 10%"}}>
+                        <Button 
+                            variant="contained" 
+                            color="post" 
+                            sx={{color: "white", textTransform: "capitalize", padding: "3% 10%"}}
+                            onClick={handleOpen}
+                        >
                             <AddIcon fontSize="small"/>
                             <Typography fontWeight={"medium"}>
                                 Post a New Idea
@@ -71,6 +144,113 @@ export default function Dashboard() {
                         </Button>
                     </Grid>
                 </Grid>
+
+                <Dialog 
+                    open={open} 
+                    onClose={handleClose}
+                    sx={{borderRadius: 7,}}
+                    fullWidth
+                >
+                    <DialogTitle>
+                        New Project Idea
+                        <DialogContentText>
+                            Describe your idea as best as you can!
+                        </DialogContentText>
+                    </DialogTitle>
+
+                    <DialogContent>
+                        <MyTextField
+                            required
+                            margin="none"
+                            id="title"
+                            label="Project Title"
+                            type="text"
+                            fullWidth
+                            variant="standard"
+                        />
+
+                        <MyFormControl required sx={{ marginTop: "5%" }}>
+                            <FormLabel id="started"> Have you started on it? </FormLabel>
+                            <MyRadioGroup
+                                row
+                                aria-labelledby="Started? Radio Buttons Group Label"
+                                name="started"
+                            >
+                                <FormControlLabel value="yes" control={<Radio />} label="Yes" onClick={handleFormOn}/>
+                                <FormControlLabel value="no" control={<Radio />} label="No" onClick={handleFormOff}/>
+                            </MyRadioGroup>
+                        </MyFormControl>
+                        {(formDisplay) &&
+                            <MyTextField
+                                // error
+                                // onError={}
+                                required
+                                disabled={!formDisplay}
+                                margin="none"
+                                id="github"
+                                label="GitHub URL"
+                                type="text"
+                                fullWidth
+                                variant="standard"
+                                placeholder="Link to your public GitHub repository"
+                            />
+                        }
+                    
+                        <MyTextField
+                            required
+                            margin="none"
+                            id="description"
+                            label="Description"
+                            type="text"
+                            fullWidth
+                            variant="standard"
+                            multiline
+                            rows={7}
+                            placeholder="Give us all the details of your idea!"
+                            inputProps={{ maxLength: 500, color: "green" }}
+                            helperText={`${description.length}/${500}`}
+                            onChange={handleChange}
+                            sx={{marginTop: "5%"}}
+                        />
+
+                        <MyTextField
+                            // autoFocus
+                            margin="none"
+                            id="contact"
+                            label="Contact Info (optional)"
+                            type="text"
+                            fullWidth
+                            variant="standard"
+                            placeholder="Email or Discord Handle"
+                            sx={{marginTop: "5%"}}
+                        />
+
+                        <MyFormControl required sx={{ marginTop: "5%" }}>
+                            <FormLabel id="anonymous">Would you like to post anonymously?</FormLabel>
+                            <MyRadioGroup
+                                row
+                                aria-labelledby="Anonymous? Radio Buttons Group Label"
+                                name="anonymous"
+                            >
+                                <FormControlLabel value="yes" control={<Radio />} label="Yes"/>
+                                <FormControlLabel value="no" control={<Radio />} label="No"/>
+                            </MyRadioGroup>
+                        </MyFormControl>
+                    </DialogContent>
+                    
+                    <DialogActions>
+                        <Button onClick={handleClose} color="post">
+                            <Typography>
+                                Cancel
+                            </Typography>
+                        </Button>
+                        <Button onClick={handleClose} variant="contained" color="post" sx={{color: "white"}}>
+                            <Typography>
+                                Post
+                            </Typography>
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </ThemeProvider>
         </React.Fragment>
         
