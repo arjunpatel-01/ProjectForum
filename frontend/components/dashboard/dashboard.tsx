@@ -60,29 +60,30 @@ const createColor = (mainColor: string) => augmentColor({ color: { main: mainCol
 const themeView = createTheme({
     palette: {
         post: createColor('#DF9090'),
+        primary: createColor('#DF9090')
     }
 });
 
-const MyTextField = styled(TextField)({
-    '& label.Mui-focused': {
-        color: '#DF9090',
-    },
-    '& .MuiInput-underline:after': {
-        borderBottomColor: '#DF9090',
-    },
-});
+// const MyTextField = styled(TextField)({
+//     '& label.Mui-focused': {
+//         color: '#DF9090',
+//     },
+//     '& .MuiInput-underline:after': {
+//         borderBottomColor: '#DF9090',
+//     },
+// });
 
-const MyFormControl = styled(FormControl)({
-    ".Mui-focused" : {
-        color: "#DF9090"
-    }
-})
+// const MyFormControl = styled(FormControl)({
+//     // ".Mui-focused" : {
+//     //     color: "#DF9090"
+//     // }
+// })
 
-const MyRadioGroup = styled(RadioGroup)({
-    ".Mui-checked": {
-        color: "#DF9090",
-    },
-})
+// const MyRadioGroup = styled(RadioGroup)({
+//     ".Mui-checked": {
+//         color: "#DF9090",
+//     },
+// })
 
 export default function Dashboard() {
 
@@ -198,7 +199,7 @@ export default function Dashboard() {
                     </DialogTitle>
 
                     <DialogContent>
-                        <MyTextField
+                        <TextField
                             required
                             margin="none"
                             id="title"
@@ -206,21 +207,23 @@ export default function Dashboard() {
                             type="text"
                             fullWidth
                             variant="standard"
+                            color="primary"
                         />
 
-                        <MyFormControl required sx={{ marginTop: "5%" }}>
+                        <FormControl required sx={{ marginTop: "5%" }} color="primary">
                             <FormLabel id="started"> Have you started on it? </FormLabel>
-                            <MyRadioGroup
+                            <RadioGroup
                                 row
                                 aria-labelledby="Started? Radio Buttons Group Label"
                                 name="started"
+                                color="primary"
                             >
                                 <FormControlLabel value="yes" control={<Radio />} label="Yes" onClick={handleFormOn}/>
                                 <FormControlLabel value="no" control={<Radio />} label="No" onClick={handleFormOff}/>
-                            </MyRadioGroup>
-                        </MyFormControl>
+                            </RadioGroup>
+                        </FormControl>
                         {(formDisplay) &&
-                            <MyTextField
+                            <TextField
                                 // error
                                 // onError={}
                                 required
@@ -232,10 +235,11 @@ export default function Dashboard() {
                                 fullWidth
                                 variant="standard"
                                 placeholder="Link to your public GitHub repository"
+                                color="primary"
                             />
                         }
                     
-                        <MyTextField
+                        <TextField
                             required
                             margin="none"
                             id="description"
@@ -250,9 +254,10 @@ export default function Dashboard() {
                             helperText={`${description.length}/${500}`}
                             onChange={handleChange}
                             sx={{marginTop: "5%"}}
+                            color="primary"
                         />
 
-                        <MyTextField
+                        <TextField
                             // autoFocus
                             margin="none"
                             id="contact"
@@ -262,19 +267,21 @@ export default function Dashboard() {
                             variant="standard"
                             placeholder="Email or Discord Handle"
                             sx={{marginTop: "5%"}}
+                            color="primary"
                         />
 
-                        <MyFormControl required sx={{ marginTop: "5%" }}>
+                        <FormControl required sx={{ marginTop: "5%" }}>
                             <FormLabel id="anonymous">Would you like to post anonymously?</FormLabel>
-                            <MyRadioGroup
+                            <RadioGroup
                                 row
                                 aria-labelledby="Anonymous? Radio Buttons Group Label"
                                 name="anonymous"
+                                color="primary"
                             >
                                 <FormControlLabel value="yes" control={<Radio />} label="Yes"/>
                                 <FormControlLabel value="no" control={<Radio />} label="No"/>
-                            </MyRadioGroup>
-                        </MyFormControl>
+                            </RadioGroup>
+                        </FormControl>
                     </DialogContent>
                     
                     <DialogActions>
