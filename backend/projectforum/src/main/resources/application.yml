@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: practice
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  datasource:
+    url: jdbc:postgresql://projectforum-db.ceimllvaydba.us-east-1.rds.amazonaws.com/postgres
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+  #    username: sa
+  #    password: password
+  #    driverClassName: org.h2.Driver
+  #  h2:
+  #    console.enabled: true
+  #    console.path: /h2-console
+  #  data:
+  #    mongodb:
+  #      uri: mongodb+srv://anp2839:QcGs05yhihNryXgf@cluster0.milmqy7.mongodb.net/library
+  #      database: library
+  main:
+    allow-bean-definition-overriding: true
+
+server:
+  port: 8080
+
+cloud:
+  aws:
+    credentials:
+      use-default-aws-credentials-chain: true
+    region:
+      use-default-aws-region-chain: true
+    stack:
+      auto: false
+#    rds:
+#      projectforum-db:
+#        username: postgres
+#        password: postgres
+#        databaseName: postgres
+
+logging:
+  level:
+    com.amazonaws.util.EC2MetadataUtils: error
+    com.amazonaws.internal.InstanceMetadataServiceResourceFetcher: error
