@@ -1,10 +1,12 @@
-package com.project.projectforum.controllers;
+package com.project.projectforum.controller;
 
-import com.project.projectforum.models.entity.Post;
-import com.project.projectforum.services.PostService;
+import com.project.projectforum.model.entity.Post;
+import com.project.projectforum.service.PostService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/post")
@@ -25,5 +27,10 @@ public class PostController {
 	public List<Post> getAll() {
 		List<Post> allPosts = postService.getAllPosts();
 		return allPosts;
+	}
+
+	@GetMapping("/filter")
+	public ResponseEntity<List<Post>> getCreatorPosts(@RequestParam("query") UUID query) {
+		return ResponseEntity.ok(postService.getCreatorPosts(query));
 	}
 }
