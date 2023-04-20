@@ -1,5 +1,8 @@
 package com.project.projectforum.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.project.projectforum.model.dto.PostDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -32,15 +35,6 @@ public class Post {
 	private Boolean isAnonymous;
 
 	@NonNull
-	private UUID creatorId;
-
-	@NonNull
-	private String creatorName;
-
-	@NonNull
-	private String creatorAltName;
-
-	@NonNull
 	private Boolean isCompleted = false;
 
 	@NonNull
@@ -48,6 +42,23 @@ public class Post {
 
 	@CreationTimestamp
 	private LocalDateTime timestamp;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "creator_id")
+	@JsonBackReference
+	private User creator;
+
+	public static Post from(PostDto postDto) {
+		return Post.builder()
+				.title(postDto.getTitle())
+				.isStarted(postDto.getIsStarted())
+				.githubURL(postDto.getGithubURL())
+				.description(postDto.getDescription())
+				.isAnonymous(postDto.getIsAnonymous())
+				.isCompleted(false)
+				.isFlagged(false)
+				.build();
+	}
 }
 
 //TODO: Utilized @Value and maybe @ConfigurationProperties instead of setting boolean = false

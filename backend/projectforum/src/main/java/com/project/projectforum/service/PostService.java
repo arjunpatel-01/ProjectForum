@@ -1,6 +1,7 @@
 package com.project.projectforum.service;
 
 import com.project.projectforum.model.entity.Post;
+import com.project.projectforum.model.exception.PostNotFoundException;
 import com.project.projectforum.repository.PostRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +20,26 @@ public class PostService {
 		return postRepository.findAll();
 	}
 
-	public Post addPost(Post post) {
-		return postRepository.save(post);
+	public Post getPost(UUID postID) {
+		return postRepository.findById(postID).orElseThrow(() -> new PostNotFoundException(postID));
 	}
 
-	public List<Post> getCreatorPosts(UUID query) {
-		return postRepository.filterByCreator(query);
+	public void deletePost(UUID postID) {
+		postRepository.findById(postID).orElseThrow(() -> new PostNotFoundException(postID));
+		postRepository.deleteById(postID);
+	}
+
+	public Post updateCompletion(UUID postID) {
+		Post post = postRepository.findById(postID).orElseThrow(() -> new PostNotFoundException(postID));
+		post.setIsCompleted(!post.getIsCompleted());
+		postRepository.save(post);
+		return post;
+	}
+
+	public Post flagPost(UUID postID) {
+		Post post = postRepository.findById(postID).orElseThrow(() -> new PostNotFoundException(postID));
+		post.setIsFlagged(true);
+		postRepository.save(post);
+		return post;
 	}
 }
