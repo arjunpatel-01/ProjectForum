@@ -64,27 +64,6 @@ const themeView = createTheme({
     }
 });
 
-// const MyTextField = styled(TextField)({
-//     '& label.Mui-focused': {
-//         color: '#DF9090',
-//     },
-//     '& .MuiInput-underline:after': {
-//         borderBottomColor: '#DF9090',
-//     },
-// });
-
-// const MyFormControl = styled(FormControl)({
-//     // ".Mui-focused" : {
-//     //     color: "#DF9090"
-//     // }
-// })
-
-// const MyRadioGroup = styled(RadioGroup)({
-//     ".Mui-checked": {
-//         color: "#DF9090",
-//     },
-// })
-
 export default function Dashboard() {
 
     const theme = useTheme();
@@ -270,7 +249,7 @@ export default function Dashboard() {
                             color="primary"
                         />
 
-                        <FormControl required sx={{ marginTop: "5%" }}>
+                        {/* <FormControl required sx={{ marginTop: "5%" }}>
                             <FormLabel id="anonymous">Would you like to post anonymously?</FormLabel>
                             <RadioGroup
                                 row
@@ -281,7 +260,7 @@ export default function Dashboard() {
                                 <FormControlLabel value="yes" control={<Radio />} label="Yes"/>
                                 <FormControlLabel value="no" control={<Radio />} label="No"/>
                             </RadioGroup>
-                        </FormControl>
+                        </FormControl> */}
                     </DialogContent>
                     
                     <DialogActions>

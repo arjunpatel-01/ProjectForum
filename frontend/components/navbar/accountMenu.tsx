@@ -1,3 +1,5 @@
+import User from "@/utils/models";
+import { useDescope, useUser } from "@descope/react-sdk";
 import { Logout } from "@mui/icons-material";
 import { 
     Avatar, 
@@ -10,10 +12,22 @@ import {
     Tooltip, 
     Typography
 } from "@mui/material";
-import React, { useState } from "react";
+import { useRouter } from "next/router";
+import React, { useCallback, useState } from "react";
+
+let testUser: User;
 
 export default function AccountMenu() {
-
+    const { user, isUserLoading } = useUser();
+    if (!isUserLoading){
+        testUser = {
+            name: user?.name!,
+            email: user?.email!,
+            userId: user?.userId
+        }
+    }
+    const { logout } = useDescope();
+    const router = useRouter();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
@@ -24,6 +38,15 @@ export default function AccountMenu() {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const onLogout = useCallback(() => {
+        // Delete Descope refresh token cookie.
+        // This is only required if Descope tokens are NOT managed in cookies.
+        document.cookie = "DSR=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    
+        logout();
+        router.push("/");
+    }, [logout, router]);
 
     return (
         <React.Fragment>
@@ -78,13 +101,13 @@ export default function AccountMenu() {
                 <ListItem>
                     <Avatar src="/Logo.png"/> 
                     <Typography>
-                        arjun.patel23@utexas.edu
+                        {testUser.email}
                     </Typography>
                 </ListItem>
 
                 <Divider />
 
-                <MenuItem>
+                <MenuItem onClick={onLogout}>
                     <ListItemIcon>
                         <Logout fontSize="small" />
                     </ListItemIcon>
