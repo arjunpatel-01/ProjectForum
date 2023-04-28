@@ -1,6 +1,5 @@
 package com.project.projectforum.controller;
 
-import com.project.projectforum.model.dto.PostDto;
 import com.project.projectforum.model.entity.Post;
 import com.project.projectforum.model.entity.User;
 import com.project.projectforum.service.UserService;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -48,7 +48,7 @@ public class UserController {
 	}
 
 	//TODO: figure out if PUT is correct here
-	@PutMapping("/{userID}/post/{postID}/save")
+	@PostMapping("/{userID}/post/{postID}/save")
 	public ResponseEntity<Post> savePost(@PathVariable final String userID, @PathVariable final String postID) {
 		UUID userId = UUID.fromString(userID);
 		UUID postId = UUID.fromString(postID);

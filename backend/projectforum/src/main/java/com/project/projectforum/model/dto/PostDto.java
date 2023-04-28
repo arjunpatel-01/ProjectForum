@@ -32,17 +32,17 @@ public class PostDto {
 
 
 
-	public static PostDto from(Post post) {
-		return PostDto.builder()
-				.title(post.getTitle())
-				.isStarted(post.getIsStarted())
-				.githubURL(post.getGithubURL())
-				.description(post.getDescription())
-				.isAnonymous(post.getIsAnonymous())
-				.isCompleted(post.getIsCompleted())
-				.isFlagged(post.getIsFlagged())
-				.build();
-	}
+//	public static PostDto from(Post post) {
+//		return PostDto.builder()
+//				.title(post.getTitle())
+//				.isStarted(post.getIsStarted())
+//				.githubURL(post.getGithubURL())
+//				.description(post.getDescription())
+////				.isAnonymous(post.getIsAnonymous())
+//				.isCompleted(post.getIsCompleted())
+//				.isFlagged(post.getIsFlagged())
+//				.build();
+//	}
 
 
 }

@@ -6,7 +6,9 @@ import com.project.projectforum.model.exception.UserNotFoundException;
 import com.project.projectforum.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -30,6 +32,7 @@ public class UserService {
 	public Post createPost(UUID userID, Post post) {
 		User user = userRepository.findById(userID).orElseThrow(() -> new UserNotFoundException(userID));
 		post.setCreator(user);
+		post.setCreatorName(user.getName());
 		user.getCreatedPosts().add(post);
 		userRepository.save(user);
 		return user.getCreatedPosts().get(user.getCreatedPosts().size()-1);
@@ -43,7 +46,8 @@ public class UserService {
 	public Post savePost(UUID userID, UUID postID) {
 		User user = userRepository.findById(userID).orElseThrow(() -> new UserNotFoundException(userID));
 		Post post = postService.getPost(postID);
-		user.getSavedPosts().add(post);
+		boolean savedStatus = user.getSavedPosts().add(post);
+//		if (!savedStatus) throw new IllegalArgumentException();
 		userRepository.save(user);
 		return post;
 	}
