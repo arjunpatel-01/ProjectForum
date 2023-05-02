@@ -8,4 +8,3 @@ public class UserNotFoundException extends RuntimeException {
 		super(MessageFormat.format("Could not find user with id {0}", id.toString()));
 	}
 }
-//TODO: error message not displaying correct for userID

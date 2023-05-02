@@ -8,4 +8,3 @@ public class PostNotFoundException extends RuntimeException {
 		super(MessageFormat.format("Could not find post with id {0}", id.toString()));
 	}
 }
-//TODO: error message not displaying correct for postID

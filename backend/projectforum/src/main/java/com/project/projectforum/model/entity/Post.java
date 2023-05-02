@@ -68,3 +68,4 @@ public class Post {
 }
 
 //TODO: Utilized @Value and maybe @ConfigurationProperties instead of setting boolean = false
+//TODO: List -> Set

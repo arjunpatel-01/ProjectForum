@@ -48,3 +48,4 @@ public class User {
 	)
 	private List<Post> savedPosts = new ArrayList<>();
 }
+//TODO: List -> Set
