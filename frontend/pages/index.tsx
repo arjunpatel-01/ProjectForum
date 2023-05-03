@@ -15,8 +15,11 @@ const inter = Inter({ subsets: ['latin'] })
 export default function Home({ data }: { data: string }) {
   const { isAuthenticated } = useSession();
   const { user } = useUser();
+
+  //might not need this
   const router = useRouter();
 
+  //might not need this
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
 

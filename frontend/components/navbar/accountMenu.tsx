@@ -4,6 +4,7 @@ import { Logout } from "@mui/icons-material";
 import { 
     Avatar, 
     Divider, 
+    Grid, 
     IconButton, 
     ListItem, 
     ListItemIcon, 
@@ -16,14 +17,24 @@ import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
 
 let testUser: User;
+let userInitials: {
+    first: String,
+    last: String
+}
 
 export default function AccountMenu() {
     const { user, isUserLoading } = useUser();
     if (!isUserLoading){
+        let nameSplit = user?.name!.split(' ');
+        let length = user?.name!.split(' ').length;
         testUser = {
             name: user?.name!,
             email: user?.email!,
             userId: user?.userId
+        }
+        userInitials = {
+            first: user?.name![0],
+            last: length > 1 ? nameSplit[length-1][0] : ""
         }
     }
     const { logout } = useDescope();
@@ -59,7 +70,7 @@ export default function AccountMenu() {
                     aria-expanded={open ? 'true' : undefined}
                     onClick={handleClick}
                 >
-                    <Avatar src="/Logo.png"/>
+                    <Avatar sx={{"bgcolor": '#DF9090'}}> {userInitials.first}{userInitials.last} </Avatar>
                 </IconButton>  
             </Tooltip>
             <Menu
@@ -99,10 +110,19 @@ export default function AccountMenu() {
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
                 <ListItem>
-                    <Avatar src="/Logo.png"/> 
-                    <Typography>
-                        {testUser.email}
-                    </Typography>
+                    <Avatar sx={{"bgcolor": '#DF9090'}}> {userInitials.first}{userInitials.last} </Avatar>
+                    <Grid>
+                        <Typography
+                        >
+                            {testUser.name}
+                        </Typography>
+                        <Typography
+                            color={"gray"}
+                        >
+                            {testUser.email}
+                        </Typography>
+                    </Grid>
+                    
                 </ListItem>
 
                 <Divider />

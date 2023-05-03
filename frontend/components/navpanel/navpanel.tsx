@@ -68,8 +68,10 @@ const MyFormControl = styled(FormControl)({
     }
 })
 
-export default function CustomNavpanel() {
+export default function CustomNavpanel(props: { navState: any; setNavState: any }) {
     
+    let navState = props.navState;
+
     const theme = useTheme();
     const isMatch = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -117,8 +119,9 @@ export default function CustomNavpanel() {
                             <MyMenuItem 
                                 key={index}
                                 selected={index === selectedIndex}
-                                onClick={(event) => handleNavItemClick(event, index)}
+                                onClick={(event) => {handleNavItemClick(event, index); props.setNavState(link.label)}}
                                 sx={{ paddingY: "4%" }}
+                                value={link.label}
                             >
                                 <ListItemText>
                                     <Typography sx={{display: "flex", alignItems: "center", fontWeight: "bold"}}>
@@ -143,7 +146,7 @@ export default function CustomNavpanel() {
                                         key={index}
                                         selected={index === selectedIndex}
                                         disabled={index === 0}
-                                        onClick={(event) => handleNavItemClick(event, index)}
+                                        onClick={(event) => {handleNavItemClick(event, index); props.setNavState(link.label)}}
                                         sx={{ paddingY: "4%" }}
                                         value={link.label}
                                 >

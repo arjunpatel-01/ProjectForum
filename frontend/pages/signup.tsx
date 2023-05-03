@@ -10,8 +10,8 @@ export default function Login() {
     return (
         <>
             <Head>
-                <title>Sign up</title>
-                <meta name="description" content="Sign up page for crypto wallet app" />
+                <title>Project Forum Sign up</title>
+                <meta name="description" content="Sign up page for project forum app" />
                 <link rel="icon" href="/assets/favicon.ico" />
             </Head>
             <div className={styles.container}>
