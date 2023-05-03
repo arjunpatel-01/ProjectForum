@@ -35,40 +35,40 @@ public class UserController {
 
 	@PostMapping("/{userID}/post")
 	public ResponseEntity<Post> createPost(@PathVariable final String userID, @RequestBody Post post) {
-		UUID userId = UUID.fromString(userID);
-		Post createdPost = userService.createPost(userId, post);
+//		UUID userId = UUID.fromString(userID);
+		Post createdPost = userService.createPost(userID, post);
 		return new ResponseEntity<>(createdPost, HttpStatus.OK);
 	}
 
 	@GetMapping("/{userID}/creations")
 	public ResponseEntity<List<Post>> getCreatedPosts(@PathVariable final String userID) {
-		UUID userId = UUID.fromString(userID);
-		List<Post> createdPosts = userService.getCreatedPosts(userId);
+//		UUID userId = UUID.fromString(userID);
+		List<Post> createdPosts = userService.getCreatedPosts(userID);
 		return new ResponseEntity<>(createdPosts, HttpStatus.OK);
 	}
 
 	//TODO: figure out if PUT is correct here
 	@PostMapping("/{userID}/post/{postID}/save")
 	public ResponseEntity<Post> savePost(@PathVariable final String userID, @PathVariable final String postID) {
-		UUID userId = UUID.fromString(userID);
+//		UUID userId = UUID.fromString(userID);
 		UUID postId = UUID.fromString(postID);
-		Post savedPost = userService.savePost(userId, postId);
+		Post savedPost = userService.savePost(userID, postId);
 		return new ResponseEntity<>(savedPost, HttpStatus.OK);
 	}
 
 	//TODO: figure out if PUT is correct here
 	@PutMapping("/{userID}/post/{postID}/unsave")
 	public ResponseEntity<String> unsavePost(@PathVariable final String userID, @PathVariable final String postID) {
-		UUID userId = UUID.fromString(userID);
+//		UUID userId = UUID.fromString(userID);
 		UUID postId = UUID.fromString(postID);
-		userService.unsavePost(userId,postId);
+		userService.unsavePost(userID,postId);
 		return new ResponseEntity<>(MessageFormat.format("Post with id {0} has been unsaved", postID), HttpStatus.OK);
 	}
 
 	@GetMapping("/{userID}/saved")
 	public ResponseEntity<List<Post>> getSavedPosts(@PathVariable final String userID) {
-		UUID userId = UUID.fromString(userID);
-		List<Post> savedPosts = userService.getSavedPosts(userId);
+//		UUID userId = UUID.fromString(userID);
+		List<Post> savedPosts = userService.getSavedPosts(userID);
 		return new ResponseEntity<>(savedPosts, HttpStatus.OK);
 	}
 }

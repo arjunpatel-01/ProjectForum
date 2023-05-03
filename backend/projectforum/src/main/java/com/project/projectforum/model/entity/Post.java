@@ -40,6 +40,8 @@ public class Post {
 	@NotBlank
 	private String description;
 
+	private String contactInfo;
+
 //	private Boolean isAnonymous;
 
 	@NonNull
@@ -57,7 +59,7 @@ public class Post {
 	private User creator;
 
 	@Column(name = "creator_id", insertable = false, nullable = false, updatable = false)
-	private UUID creatorID;
+	private String creatorID;
 
 	private String creatorName;
 

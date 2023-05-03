@@ -19,8 +19,8 @@ import java.util.*;
 		property = "id")
 public class User {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private UUID id;
+//	@GeneratedValue(strategy = GenerationType.AUTO)
+	private String id;
 
 	@NonNull
 	private String name;

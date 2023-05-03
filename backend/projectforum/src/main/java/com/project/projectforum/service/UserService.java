@@ -29,7 +29,7 @@ public class UserService {
 		return userRepository.findAll();
 	}
 
-	public Post createPost(UUID userID, Post post) {
+	public Post createPost(String userID, Post post) {
 		User user = userRepository.findById(userID).orElseThrow(() -> new UserNotFoundException(userID));
 		post.setCreator(user);
 		post.setCreatorName(user.getName());
@@ -38,12 +38,12 @@ public class UserService {
 		return user.getCreatedPosts().get(user.getCreatedPosts().size()-1);
 	}
 
-	public List<Post> getCreatedPosts(UUID userID) {
+	public List<Post> getCreatedPosts(String userID) {
 		User user = userRepository.findById(userID).orElseThrow(() -> new UserNotFoundException(userID));
 		return user.getCreatedPosts();
 	}
 
-	public Post savePost(UUID userID, UUID postID) {
+	public Post savePost(String userID, UUID postID) {
 		User user = userRepository.findById(userID).orElseThrow(() -> new UserNotFoundException(userID));
 		Post post = postService.getPost(postID);
 		boolean savedStatus = user.getSavedPosts().add(post);
@@ -52,14 +52,14 @@ public class UserService {
 		return post;
 	}
 
-	public void unsavePost(UUID userID, UUID postID) {
+	public void unsavePost(String userID, UUID postID) {
 		User user = userRepository.findById(userID).orElseThrow(() -> new UserNotFoundException(userID));
 		Post post = postService.getPost(postID);
 		user.getSavedPosts().remove(post);
 		userRepository.save(user);
 	}
 
-	public List<Post> getSavedPosts(UUID userID) {
+	public List<Post> getSavedPosts(String userID) {
 		User user = userRepository.findById(userID).orElseThrow(() -> new UserNotFoundException(userID));
 		return user.getSavedPosts();
 	}
