@@ -6,10 +6,7 @@ import com.project.projectforum.model.exception.UserNotFoundException;
 import com.project.projectforum.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -40,7 +37,9 @@ public class UserService {
 
 	public List<Post> getCreatedPosts(String userID) {
 		User user = userRepository.findById(userID).orElseThrow(() -> new UserNotFoundException(userID));
-		return user.getCreatedPosts();
+		List<Post> created_posts = new ArrayList<>(user.getCreatedPosts());
+		Collections.reverse(created_posts);
+		return created_posts;
 	}
 
 	public Post savePost(String userID, UUID postID) {
@@ -61,6 +60,8 @@ public class UserService {
 
 	public List<Post> getSavedPosts(String userID) {
 		User user = userRepository.findById(userID).orElseThrow(() -> new UserNotFoundException(userID));
-		return user.getSavedPosts();
+		List<Post> saved_posts = new ArrayList<>(user.getSavedPosts());
+		Collections.reverse(saved_posts);
+		return saved_posts;
 	}
 }

@@ -9,6 +9,8 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,8 +25,11 @@ public class PostService {
 		this.postRepository = postRepository;
 	}
 
+	//TODO: return sorted by timestamp
 	public List<Post> getAllPosts() {
-		return postRepository.findAll();
+		List<Post> all_posts = new ArrayList<>(postRepository.findAll());
+		Collections.reverse(all_posts);
+		return all_posts;
 	}
 
 	public Post getPost(UUID postID) {
