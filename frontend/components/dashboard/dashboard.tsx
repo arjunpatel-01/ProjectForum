@@ -27,6 +27,12 @@ import {
 } from "@mui/material";
 import { styled } from '@mui/system';
 import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
+import OpenInFullIcon from '@mui/icons-material/OpenInFull';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+import ReportIcon from '@mui/icons-material/Report';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import React, { useCallback, useEffect, useState } from "react";
 import style from "./dashboard.module.scss"
 import CustomNavpanel from "../navpanel/navpanel";
@@ -34,7 +40,7 @@ import { useUser } from "@descope/react-sdk";
 import User from "@/utils/models";
 
 
-const CARDS = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30];
+// const CARDS = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30];
 
 declare module '@mui/material/styles' {
     interface CustomPalette {
@@ -66,12 +72,12 @@ const themeView = createTheme({
     }
 });
 
-let testUser: User;
+let userData: User;
 
 export default function Dashboard() {
     const { user, isUserLoading } = useUser();
     if (!isUserLoading){
-        testUser = {
+        userData = {
             name: user?.name!,
             email: user?.email!,
             userId: user?.userId
@@ -126,7 +132,7 @@ export default function Dashboard() {
             setStartedError(startedValue==="");
             setDescriptionError(description==="");
         } else {
-            const request = await fetch('/api/users/'+testUser.userId+"/post", {
+            const request = await fetch('/api/users/'+userData.userId+"/post", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -178,7 +184,7 @@ export default function Dashboard() {
     }, []); 
 
     const getCreatedPosts = useCallback(async () => {
-        const response = await fetch('/api/users/'+testUser!.userId!+'/creations', {
+        const response = await fetch('/api/users/'+userData!.userId!+'/creations', {
             method: 'GET'
         });
         const response_body = await response.json();
@@ -187,7 +193,7 @@ export default function Dashboard() {
     }, []);
 
     const getSavedPosts = useCallback(async () => {
-    const response = await fetch('/api/users/'+testUser!.userId!+'/saved', {
+        const response = await fetch('/api/users/'+userData!.userId!+'/saved', {
             method: 'GET'
         });
         const response_body = await response.json();
@@ -207,37 +213,81 @@ export default function Dashboard() {
         });
     }, [getAllPosts, getCreatedPosts, getSavedPosts, navState]);
 
+    function generateCard(
+        post: { 
+            title: string 
+            creator_name: string
+            description: string
+            is_started: boolean
+            github_url: string
+            creator_id: string
+            timestamp: string
+            is_completed: string
+            contact_info: string | null
+        }, 
+        index: number
+    ) {
+        return (
+            <div key={index} style={{paddingTop: "10px"}}>
+                <Card sx={{height: "300px", padding: "10px"}}>
+                    <Typography variant="h3">
+                        {post.title} 
+                    </Typography>
+                    
+                    <Typography variant="body1" paragraph={true}>
+                        {post.description}
+                    </Typography>
+
+                    <Typography variant="body2">
+                        {post.creator_name}
+                    </Typography>
+
+                    {post.is_started && (
+                        <Typography variant="body2" >
+                            {post.github_url}
+                        </Typography>
+                    )}
+
+                    {post.creator_id===userData.userId && (
+                        <CloseIcon />
+                    )}
+
+                    <OpenInFullIcon />
+                    
+                    <ReportIcon />
+
+                    {post.creator_id!==userData.userId && (
+                        <BookmarkIcon />
+                    )}
+
+                    {post.is_completed ? (
+                        <CheckCircleIcon />
+                    ) : (
+                        <CheckCircleOutlineIcon />
+                    )}
+
+                    <Typography variant="body1">
+                        {post.timestamp}
+                    </Typography>
+
+                    <Typography variant="body2" >
+                        {post.contact_info}
+                    </Typography>
+                </Card>
+            </div>
+        )
+    }
+
     const allPostsCards = allPosts.map((post, index) => (
-        <div key={index} style={{paddingTop: "10px"}}>
-            <Card sx={{height: "300px",}}>
-                {post.title} 
-                <p>
-                    {post.creator_name}
-                </p>
-            </Card>
-        </div>
+        !post.is_flagged && generateCard(post, index)
     ));
 
     const createdPostsCards = createdPosts.map((post, index) => (
-        <div key={index} style={{paddingTop: "10px"}}>
-            <Card sx={{height: "300px",}}>
-                {post.title}
-                <p>
-                    {post.creator_name}
-                </p>
-            </Card>
-        </div>
+        !post.is_flagged && generateCard(post, index)
     ))
 
     const savedPostsCards = savedPosts.map((post, index) => (
-        <div key={index} style={{paddingTop: "10px"}}>
-            <Card sx={{height: "300px",}}>
-                {post.title}
-                <p>
-                    {post.creator_name}
-                </p>
-            </Card>
-        </div>
+        !post.is_flagged && generateCard(post, index)
     ))
 
     return (
@@ -289,7 +339,9 @@ export default function Dashboard() {
                         <Grid container spacing={0} width={"100%"} overflow={"hidden"} justifyContent="center">
                             <Grid item xs={10} sx={{width: "100%", paddingX:"1%"}}>
                                 <List className={style.invisiScroll} style={{marginTop: "2vh", maxHeight: "80vh", overflow: 'auto', justifyContent: "center", width: "100%", borderRadius: 3}}>
-                                    {allPostsCards}
+                                    {navState==="Home" && allPostsCards}
+                                    {navState==="My Ideas" && createdPostsCards}
+                                    {navState==="My Collection" && savedPostsCards}
                                 </List>
                             </Grid>
                         </Grid>
@@ -343,10 +395,9 @@ export default function Dashboard() {
                         </FormControl>
                         {(formDisplay) &&
                             <TextField
-                                // error
-                                // onError={}
                                 required
                                 disabled={!formDisplay}
+                                //TODO: make error if displayed but empty
                                 margin="none"
                                 id="github"
                                 label="GitHub URL"

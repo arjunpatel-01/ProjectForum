@@ -121,7 +121,6 @@ export default function CustomNavpanel(props: { navState: any; setNavState: any 
                                 selected={index === selectedIndex}
                                 onClick={(event) => {handleNavItemClick(event, index); props.setNavState(link.label)}}
                                 sx={{ paddingY: "4%" }}
-                                value={link.label}
                             >
                                 <ListItemText>
                                     <Typography sx={{display: "flex", alignItems: "center", fontWeight: "bold"}}>
@@ -148,7 +147,6 @@ export default function CustomNavpanel(props: { navState: any; setNavState: any 
                                         disabled={index === 0}
                                         onClick={(event) => {handleNavItemClick(event, index); props.setNavState(link.label)}}
                                         sx={{ paddingY: "4%" }}
-                                        value={link.label}
                                 >
                                     <ListItemText>
                                         <Typography sx={{display: "flex", alignItems: "center", fontWeight: "bold"}}>
