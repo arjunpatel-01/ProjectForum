@@ -38,7 +38,7 @@ public class UserService {
 	public List<Post> getCreatedPosts(String userID) {
 		User user = userRepository.findById(userID).orElseThrow(() -> new UserNotFoundException(userID));
 		List<Post> created_posts = new ArrayList<>(user.getCreatedPosts());
-		Collections.reverse(created_posts);
+		created_posts.sort(Comparator.comparing(Post::getTimestamp).reversed());
 		return created_posts;
 	}
 
@@ -61,7 +61,7 @@ public class UserService {
 	public List<Post> getSavedPosts(String userID) {
 		User user = userRepository.findById(userID).orElseThrow(() -> new UserNotFoundException(userID));
 		List<Post> saved_posts = new ArrayList<>(user.getSavedPosts());
-		Collections.reverse(saved_posts);
+		saved_posts.sort(Comparator.comparing(Post::getTimestamp).reversed());
 		return saved_posts;
 	}
 }

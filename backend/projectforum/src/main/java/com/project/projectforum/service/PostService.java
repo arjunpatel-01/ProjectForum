@@ -7,6 +7,7 @@ import com.project.projectforum.repository.PostRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,9 +28,7 @@ public class PostService {
 
 	//TODO: return sorted by timestamp
 	public List<Post> getAllPosts() {
-		List<Post> all_posts = new ArrayList<>(postRepository.findAll());
-		Collections.reverse(all_posts);
-		return all_posts;
+		return postRepository.findAll(Sort.by(Sort.Direction.DESC, "timestamp"));
 	}
 
 	public Post getPost(UUID postID) {

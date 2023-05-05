@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
     Avatar,
     Divider,
@@ -13,9 +13,22 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from '@mui/icons-material/Logout';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import { useDescope } from "@descope/react-sdk";
+import { useRouter } from "next/router";
 
 export default function DrawerComp()  {
     const [openDrawer, setOpenDrawer] = useState(false);
+    const { logout } = useDescope();
+    const router = useRouter();
+
+    const onLogout = useCallback(() => {
+        // Delete Descope refresh token cookie.
+        // This is only required if Descope tokens are NOT managed in cookies.
+        document.cookie = "DSR=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        setOpenDrawer(!openDrawer);
+        logout();
+        router.push("/");
+    }, [logout, router]);
 
     return (
         <React.Fragment>
@@ -34,7 +47,7 @@ export default function DrawerComp()  {
                     
                     <Divider />
 
-                    <ListItemButton>
+                    <ListItemButton onClick={onLogout}>
                         <ListItemIcon style={{alignItems: "center"}}>
                             <LogoutIcon style={{marginLeft: "10px"}}/>
                             <ListItemText style={{paddingLeft: "10px"}}>Logout</ListItemText>

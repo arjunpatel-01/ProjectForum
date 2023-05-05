@@ -65,7 +65,6 @@ public class Post {
 
 	@ManyToMany(mappedBy = "savedPosts", fetch = FetchType.LAZY)
 	@JsonIgnore
-//	@JsonBackReference(value = "saved")
 	private List<User> users = new ArrayList<>();
 }
 

@@ -8,6 +8,7 @@ import {
     DialogContent, 
     DialogContentText, 
     DialogTitle, 
+    Divider, 
     FormControl, 
     FormControlLabel, 
     FormLabel, 
@@ -30,14 +31,19 @@ import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import ReportIcon from '@mui/icons-material/Report';
+import ReportGmailerrorredIcon from '@mui/icons-material/ReportGmailerrorred';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import React, { useCallback, useEffect, useState } from "react";
 import style from "./dashboard.module.scss"
 import CustomNavpanel from "../navpanel/navpanel";
 import { useUser } from "@descope/react-sdk";
 import User from "@/utils/models";
+import * as EmailValidator from 'email-validator';
 
 
 // const CARDS = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30];
@@ -93,10 +99,14 @@ export default function Dashboard() {
     const [title, setTitle] = useState("");
     const [startedValue, setStartedValue] = useState("");
     const [description, setDescription] = useState("");
+    const [github, setGithub] = useState("");
+    const [contact, setContact] = useState("");
 
     const [titleError, setTitleError] = useState(false);
     const [startedError, setStartedError] = useState(false);
     const [descriptionError, setDescriptionError] = useState(false);
+    const [githubError, setGithubError] = useState(false);
+    const [contactError, setContactError] = useState(false);
 
     const [allPosts, setAllPosts] = useState([] as any[]);
     const [createdPosts, setCreatedPosts] = useState([] as any[]);
@@ -111,26 +121,35 @@ export default function Dashboard() {
         setDescription(event.target.value);
     }
 
+    const handleGithubChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        setGithub(event.target.value);
+    }
+
+    const handleContactChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        setContact(event.target.value);
+    }
+
     const handleOpen = () => {
         setOpen(true);
     }
 
     const handlePost = async () => {
-        //get all document data
-        // var title = (document.getElementById("title") as HTMLInputElement | null)?.value;
         console.log("title: ", title);
         console.log("started value: ", startedValue==="Yes");
-        var github = (document.getElementById("github") as HTMLInputElement | null)?.value;
         console.log("github: ", github);
-        // var description = (document.getElementById("description") as HTMLInputElement | null)?.value;
         console.log("description: ", description);
-        var contact = (document.getElementById("contact") as HTMLInputElement | null)?.value !== "" ? (document.getElementById("contact") as HTMLInputElement | null)?.value : undefined;
         console.log("contact: ", contact);
+        console.log(contact)
+        var isGithubUrl = require('is-github-url')
+        var validGithub: boolean = isGithubUrl(github);
+        var validContact: boolean = EmailValidator.validate(contact);
 
-        if (title === "" || startedValue === "" || description === "") {
+        if (title === "" || startedValue === "" || description === "" || (formDisplay && !validGithub) || ((contact !== "" && contact !== null && contact !== undefined) && !validContact)) {
             setTitleError(title==="");
             setStartedError(startedValue==="");
             setDescriptionError(description==="");
+            setGithubError(!validGithub);
+            setContactError((contact !== "" && contact !== null && contact !== undefined) && !validContact);
         } else {
             const request = await fetch('/api/users/'+userData.userId+"/post", {
                 method: 'POST',
@@ -140,7 +159,7 @@ export default function Dashboard() {
                     is_started: startedValue==="Yes",
                     github_url: github,
                     description: description,
-                    contact_info: contact,
+                    contact_info: (contact === "" || contact === null || contact === undefined) ? null : contact,
                 })
             });
             const response = await request.json();
@@ -157,10 +176,14 @@ export default function Dashboard() {
         setTitleError(false);
         setStartedError(false);
         setDescriptionError(false);
+        setGithubError(false);
+        setContactError(false);
 
         setTitle("");
         setStartedValue("");
         setDescription("");
+        setGithub("");
+        setContact("");
 
         setOpen(false);
         setFormDisplay(false);
@@ -213,66 +236,110 @@ export default function Dashboard() {
         });
     }, [getAllPosts, getCreatedPosts, getSavedPosts, navState]);
 
+    // TODO: convert to functional component
     function generateCard(
         post: { 
+            id: string
             title: string 
             creator_name: string
             description: string
             is_started: boolean
-            github_url: string
+            github_url: string | null
             creator_id: string
             timestamp: string
             is_completed: string
             contact_info: string | null
+            is_flagged: boolean
         }, 
         index: number
     ) {
         return (
             <div key={index} style={{paddingTop: "10px"}}>
-                <Card sx={{height: "300px", padding: "10px"}}>
-                    <Typography variant="h3">
-                        {post.title} 
-                    </Typography>
+                <Card sx={{height: "400px", padding: "10px 0px"}}>
+                    <Grid container spacing={0} width={"100%"} padding="10px">
+                        <Grid item xs={12} sx={{textAlign: "right"}}>
+                            {post.creator_id===userData.userId && (
+                                <CloseIcon fontSize="medium" sx={{color: "gray"}} />
+                            )}
+                        </Grid>
+                    </Grid>
+
+                    <Grid container spacing={0} width={"100%"} height={"240px"} padding="0px 20px" overflow={"hidden"}>
+                        <Grid item xs={12}>
+                            <Typography variant="h3" color="primary">
+                                {post.title} 
+                            </Typography>
+
+                            <Divider sx={{marginBottom: "20px"}} />
+                            
+                            {post.description.split(/\r?\n/).map((line, index) => (
+                                <Typography key={index} variant="body1" paragraph={true}>
+                                    {line}
+                                </Typography>
+                            ))}
+                        </Grid>
+                    </Grid>
+
+                    <Grid container spacing={0} width={"100%"} height={"50px"} padding="0px 20px">
+                        <Grid item xs={12}>
+                            {/* TOOD: change url: and contact: to logos */}
+
+                            {post.is_started && (
+                                <div style={{display: "flex", alignItems: "center"}}>
+                                    <GitHubIcon fontSize="small" sx={{color: "#6e5494"}}/>
+                                    <Typography variant="body2" marginLeft="3px" sx={{color: "#6e5494", "&:hover": { color: "#483761" }}}>
+                                        <a href={post.github_url!} target="_blank" rel="noopener" >{post.github_url}</a>
+                                    </Typography>
+                                </div>
+                            )}
+
+                            {post.contact_info!==null && (
+                                <div style={{display: "flex", alignItems: "center"}}>
+                                    <AccountCircleIcon fontSize="small" />
+                                    <Typography variant="body2" marginLeft="3px">
+                                        {post.contact_info}
+                                    </Typography>
+                                </div>
+                            )}
+                        </Grid>
+                    </Grid>
                     
-                    <Typography variant="body1" paragraph={true}>
-                        {post.description}
-                    </Typography>
+                    <Divider />
 
-                    <Typography variant="body2">
-                        {post.creator_name}
-                    </Typography>
+                    <Grid container spacing={0} width={"100%"} alignItems="center" padding="7px 10px">
+                        <Grid item xs={7}>
+                            {/* TODO: fix bookmark display for allPosts (includes not working properly) */}
+                            {post.is_completed ? (
+                                <CheckCircleIcon color={"success"} fontSize="medium" />
+                            ) : (
+                                <CheckCircleOutlineIcon fontSize="medium" />
+                            )}
+                            
+                            {post.creator_id!==userData.userId && 
+                                (savedPosts.includes(post) ? (
+                                    <BookmarkIcon fontSize="medium" color="info" />
+                                ) : (
+                                    <BookmarkBorderIcon fontSize="medium" color="info" />
+                                ))
+                            }
 
-                    {post.is_started && (
-                        <Typography variant="body2" >
-                            {post.github_url}
-                        </Typography>
-                    )}
+                            {post.is_flagged ? (<ReportIcon fontSize="medium" color="error" />) : (<ReportGmailerrorredIcon fontSize="medium" color="error" />)}
 
-                    {post.creator_id===userData.userId && (
-                        <CloseIcon />
-                    )}
-
-                    <OpenInFullIcon />
-                    
-                    <ReportIcon />
-
-                    {post.creator_id!==userData.userId && (
-                        <BookmarkIcon />
-                    )}
-
-                    {post.is_completed ? (
-                        <CheckCircleIcon />
-                    ) : (
-                        <CheckCircleOutlineIcon />
-                    )}
-
-                    <Typography variant="body1">
-                        {post.timestamp}
-                    </Typography>
-
-                    <Typography variant="body2" >
-                        {post.contact_info}
-                    </Typography>
+                        </Grid>
+                        <Grid item container xs={5} alignItems="center">
+                            <Grid item xs={11}  sx={{textAlign: "right", paddingRight: "10px"}}>
+                                <Typography variant="body2">
+                                    {new Date(post.timestamp).toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" })}
+                                </Typography>
+                                <Typography variant="body2" color="primary">
+                                    {post.creator_name}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={1}  sx={{textAlign: "right"}}>
+                                <OpenInFullIcon fontSize="medium" sx={{color: "gray"}} />
+                            </Grid>
+                        </Grid>
+                    </Grid>
                 </Card>
             </div>
         )
@@ -398,6 +465,8 @@ export default function Dashboard() {
                                 required
                                 disabled={!formDisplay}
                                 //TODO: make error if displayed but empty
+                                value={github}
+                                error={formDisplay && githubError}
                                 margin="none"
                                 id="github"
                                 label="GitHub URL"
@@ -406,6 +475,7 @@ export default function Dashboard() {
                                 variant="standard"
                                 placeholder="Link to your public GitHub repository"
                                 color="primary"
+                                onChange={handleGithubChange}
                             />
                         }
                     
@@ -422,24 +492,26 @@ export default function Dashboard() {
                             multiline
                             rows={7}
                             placeholder="Give us all the details of your idea!"
-                            inputProps={{ maxLength: 500, color: "green" }}
-                            helperText={`${description.length}/${500}`}
+                            inputProps={{ maxLength: 255, color: "green" }}
+                            helperText={`${description.length}/${255}`}
                             onChange={handleDescriptionChange}
                             sx={{marginTop: "5%"}}
                             color="primary"
                         />
 
                         <TextField
-                            // autoFocus
                             margin="none"
                             id="contact"
+                            value={contact}
                             label="Contact Info (optional)"
+                            error={contactError}
                             type="text"
                             fullWidth
                             variant="standard"
-                            placeholder="Email or Discord Handle"
+                            placeholder="Email"
                             sx={{marginTop: "5%"}}
                             color="primary"
+                            onChange={handleContactChange}
                         />
 
                         {/* <FormControl required sx={{ marginTop: "5%" }}>

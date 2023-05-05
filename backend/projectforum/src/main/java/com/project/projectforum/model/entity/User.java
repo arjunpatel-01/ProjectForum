@@ -35,11 +35,6 @@ public class User {
 	@JsonManagedReference(value = "creator")
 	private List<Post> createdPosts = new ArrayList<>();
 
-//	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//	@JsonManagedReference
-//	@OneToMany(fetch = FetchType.LAZY)
-//	private List<Post> savedPosts = new ArrayList<>();
-
 	@ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
 	@JoinTable(
 			name = "user_post",
