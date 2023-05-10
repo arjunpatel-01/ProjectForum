@@ -13,6 +13,7 @@ import {
     FormControlLabel, 
     FormLabel, 
     Grid, 
+    IconButton, 
     List, 
     Modal, 
     PaletteColorOptions, 
@@ -21,6 +22,7 @@ import {
     RadioGroup, 
     TextField, 
     ThemeProvider, 
+    Tooltip, 
     Typography, 
     createTheme,
     useMediaQuery,
@@ -37,7 +39,8 @@ import ReportGmailerrorredIcon from '@mui/icons-material/ReportGmailerrorred';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import GitHubIcon from '@mui/icons-material/GitHub';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import EmailIcon from '@mui/icons-material/Email';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import React, { useCallback, useEffect, useState } from "react";
 import style from "./dashboard.module.scss"
 import CustomNavpanel from "../navpanel/navpanel";
@@ -95,6 +98,7 @@ export default function Dashboard() {
 
     const [open, setOpen] = useState(false);
     const [formDisplay, setFormDisplay] = useState(false);
+    const [gridOverFlow, setGridOverflow] = useState(false);
 
     const [title, setTitle] = useState("");
     const [startedValue, setStartedValue] = useState("");
@@ -168,8 +172,70 @@ export default function Dashboard() {
             getAllPosts().then((posts) => {
                 setAllPosts(posts);
             });
+
+            getCreatedPosts().then((posts) => {
+                setCreatedPosts(posts);
+            });
+
             handleClose();
         }
+    }
+
+    const handleSave = async (postId: string) => {
+        //save
+        const request = await fetch('/api/users/'+userData.userId+"/post/"+postId+"/save", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+        });
+        const response = await request.json();
+        console.log("saved: ", response);
+
+        getAllPosts().then((posts) => {
+            setAllPosts(posts);
+        });
+
+        getSavedPosts().then((posts) => {
+            setSavedPosts(posts);
+        });
+    }
+
+    const handleUnsave = async (postId: string) => {
+        //unsave
+        const request = await fetch('/api/users/'+userData.userId+"/post/"+postId+"/unsave", {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+        });
+        const response = await request.text();
+        console.log(response);
+
+        getAllPosts().then((posts) => {
+            setAllPosts(posts);
+        });
+
+        getSavedPosts().then((posts) => {
+            setSavedPosts(posts);
+        });
+    }
+
+    const handleFlag = async (postId: string) => {
+        const request = await fetch('/api/posts/'+postId+"/flag", {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+        });
+        const response = await request.text();
+        console.log(response);
+
+        getAllPosts().then((posts) => {
+            setAllPosts(posts);
+        });
+
+        getSavedPosts().then((posts) => {
+            setSavedPosts(posts);
+        });
+
+        getCreatedPosts().then((posts) => {
+            setCreatedPosts(posts);
+        });
     }
 
     const handleClose = () => {
@@ -194,7 +260,7 @@ export default function Dashboard() {
     }
 
     const handleFormOff = () => {
-        setFormDisplay(false);
+        setFormDisplay(false); 
     }
 
     const getAllPosts = useCallback(async () => {
@@ -255,35 +321,39 @@ export default function Dashboard() {
     ) {
         return (
             <div key={index} style={{paddingTop: "10px"}}>
-                <Card sx={{height: "400px", padding: "10px 0px"}}>
+                <Card sx={{height: "400px"}}>
                     <Grid container spacing={0} width={"100%"} padding="10px">
                         <Grid item xs={12} sx={{textAlign: "right"}}>
-                            {post.creator_id===userData.userId && (
-                                <CloseIcon fontSize="medium" sx={{color: "gray"}} />
+                            {post.creator_id===userData.userId ? (
+                                <Tooltip title="Delete post">
+                                    <IconButton>
+                                        <CloseIcon fontSize="medium" sx={{color: "gray"}} />
+                                    </IconButton>
+                                </Tooltip>
+                            ) : (
+                                <IconButton sx={{visibility: "hidden"}}>
+                                    <CloseIcon fontSize="medium" sx={{color: "gray", visibility: "hidden"}} />
+                                </IconButton>
                             )}
                         </Grid>
                     </Grid>
 
-                    <Grid container spacing={0} width={"100%"} height={"240px"} padding="0px 20px" overflow={"hidden"}>
-                        <Grid item xs={12}>
+                    <Grid container spacing={0} width={"100%"} height={"240px"} padding="0px 20px" id="title_and_description" >
+                        <Grid item xs={12} zeroMinWidth height={"100%"} overflow="hidden">
                             <Typography variant="h3" color="primary">
                                 {post.title} 
                             </Typography>
 
                             <Divider sx={{marginBottom: "20px"}} />
-                            
-                            {post.description.split(/\r?\n/).map((line, index) => (
-                                <Typography key={index} variant="body1" paragraph={true}>
-                                    {line}
-                                </Typography>
-                            ))}
+
+                            <Typography variant="body1" sx={{overflowWrap: "break-word", whiteSpace: "pre-line"}}>
+                                {post.description}
+                            </Typography>
                         </Grid>
                     </Grid>
 
                     <Grid container spacing={0} width={"100%"} height={"50px"} padding="0px 20px">
                         <Grid item xs={12}>
-                            {/* TOOD: change url: and contact: to logos */}
-
                             {post.is_started && (
                                 <div style={{display: "flex", alignItems: "center"}}>
                                     <GitHubIcon fontSize="small" sx={{color: "#6e5494"}}/>
@@ -295,7 +365,7 @@ export default function Dashboard() {
 
                             {post.contact_info!==null && (
                                 <div style={{display: "flex", alignItems: "center"}}>
-                                    <AccountCircleIcon fontSize="small" />
+                                    <EmailIcon fontSize="small"/>
                                     <Typography variant="body2" marginLeft="3px">
                                         {post.contact_info}
                                     </Typography>
@@ -306,28 +376,81 @@ export default function Dashboard() {
                     
                     <Divider />
 
-                    <Grid container spacing={0} width={"100%"} alignItems="center" padding="7px 10px">
+                    <Grid container spacing={0} width={"100%"} alignItems="center" padding="5px 10px">
                         <Grid item xs={7}>
-                            {/* TODO: fix bookmark display for allPosts (includes not working properly) */}
                             {post.is_completed ? (
-                                <CheckCircleIcon color={"success"} fontSize="medium" />
-                            ) : (
-                                <CheckCircleOutlineIcon fontSize="medium" />
-                            )}
-                            
-                            {post.creator_id!==userData.userId && 
-                                (savedPosts.includes(post) ? (
-                                    <BookmarkIcon fontSize="medium" color="info" />
+                                post.creator_id === userData.userId ?
+                                (
+                                    <Tooltip title="Mark incomplete">
+                                        <IconButton size="small">
+                                            <CheckCircleIcon color={"success"} fontSize="medium" />
+                                        </IconButton>
+                                    </Tooltip>
                                 ) : (
-                                    <BookmarkBorderIcon fontSize="medium" color="info" />
-                                ))
-                            }
+                                    <Tooltip title="You do not have permission to mark this incomplete">
+                                        <IconButton size="small">
+                                            <CheckCircleIcon color={"success"} fontSize="medium" />
+                                        </IconButton>
+                                    </Tooltip>
+                                )
+                            ) : (
+                                <Tooltip title="Mark completed">
+                                    <IconButton size="small">
+                                        <CheckCircleOutlineIcon fontSize="medium" />
+                                    </IconButton>
+                                </Tooltip>
+                            )}
 
-                            {post.is_flagged ? (<ReportIcon fontSize="medium" color="error" />) : (<ReportGmailerrorredIcon fontSize="medium" color="error" />)}
+                            {post.creator_id !== userData.userId && (
+                                savedPosts.length !== 0 ? (
+                                    savedPosts.map((p, index) => {
+                                            if (p.id === post.id) {
+                                                return( 
+                                                    <Tooltip title="Unsave">
+                                                        <IconButton size="small" onClick={() => handleUnsave(post.id)} >
+                                                            <BookmarkIcon key={index} fontSize="medium" color="info"  /> 
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                )
+                                            } else {
+                                                return( 
+                                                    <Tooltip title="Save">
+                                                        <IconButton size="small" onClick={() => handleSave(post.id)} >
+                                                            <BookmarkBorderIcon key={index} fontSize="medium" color="info" /> 
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                    
+                                                )
+                                            }
+                                    })
+                                ) : (
+                                    <Tooltip title="Save">
+                                        <IconButton size="small" onClick={() => handleSave(post.id)} >
+                                            <BookmarkBorderIcon fontSize="medium" color="info" />
+                                        </IconButton>
+                                    </Tooltip>
+                                )
+                            )}
+
+                            {/* TODO: Popup menu to indicate report reason: spam, inappropriate, violence or hate speech, illegal activity */}
+                            {post.is_flagged ? (
+                                <Tooltip title="Report status pending">
+                                    <IconButton size="small">
+                                        <ReportIcon fontSize="medium" color="error" />
+                                    </IconButton>
+                                </Tooltip>
+                            ) : (
+                                <Tooltip title="Report">
+                                    <IconButton size="small" onClick={() => handleFlag(post.id)}>
+                                        <ReportGmailerrorredIcon fontSize="medium" color="error" />
+                                    </IconButton>
+                                </Tooltip>
+                            )}
 
                         </Grid>
+
                         <Grid item container xs={5} alignItems="center">
-                            <Grid item xs={11}  sx={{textAlign: "right", paddingRight: "10px"}}>
+                            <Grid item xs={10}  sx={{textAlign: "right"}}>
                                 <Typography variant="body2">
                                     {new Date(post.timestamp).toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" })}
                                 </Typography>
@@ -335,8 +458,12 @@ export default function Dashboard() {
                                     {post.creator_name}
                                 </Typography>
                             </Grid>
-                            <Grid item xs={1}  sx={{textAlign: "right"}}>
-                                <OpenInFullIcon fontSize="medium" sx={{color: "gray"}} />
+                            <Grid item xs={2}  sx={{textAlign: "right"}}>
+                                <Tooltip title="Open in full">
+                                    <IconButton size="small">
+                                        <OpenInFullIcon fontSize="medium" sx={{color: "gray"}} />
+                                    </IconButton>
+                                </Tooltip>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -443,6 +570,8 @@ export default function Dashboard() {
                             fullWidth
                             variant="standard"
                             color="primary"
+                            inputProps={{ maxLength: 25 }}
+                            helperText={`${title.length}/${25}`}
                             onChange={handleTitleChange}
                         />
 
@@ -492,7 +621,7 @@ export default function Dashboard() {
                             multiline
                             rows={7}
                             placeholder="Give us all the details of your idea!"
-                            inputProps={{ maxLength: 255, color: "green" }}
+                            inputProps={{ maxLength: 255 }}
                             helperText={`${description.length}/${255}`}
                             onChange={handleDescriptionChange}
                             sx={{marginTop: "5%"}}
