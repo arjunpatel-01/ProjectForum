@@ -250,7 +250,8 @@ export default function Dashboard() {
 
     const createdPostsCards = createdPosts.map((post, index) => (
         !post.is_flagged && 
-            <PostCard 
+            <PostCard
+                key={index}
                 post={post} 
                 index={index} 
                 updatePostsArrays={updatePostsArrays} 
@@ -261,6 +262,7 @@ export default function Dashboard() {
     const savedPostsCards = savedPosts.map((post, index) => (
         !post.is_flagged &&
             <PostCard 
+                key={index}
                 post={post} 
                 index={index} 
                 updatePostsArrays={updatePostsArrays} 
