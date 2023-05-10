@@ -25,7 +25,6 @@ public class PostController {
 		return new ResponseEntity<>(allPosts, HttpStatus.OK);
 	}
 
-	//TODO: issue when post is saved with another user, violated foreign key constraint
 	@DeleteMapping("/{postID}")
 	public ResponseEntity<String> deletePost(@PathVariable final String postID) {
 		UUID postId = UUID.fromString(postID);
@@ -34,16 +33,16 @@ public class PostController {
 	}
 
 	@PutMapping("/{postID}/completed")
-	public ResponseEntity<Post> updatePostCompletion(@PathVariable final String postID) {
+	public ResponseEntity<Post> updatePostCompletion(@PathVariable final String postID, @RequestBody final String url) {
 		UUID postId = UUID.fromString(postID);
-		Post updatedPost = postService.updateCompletion(postId);
+		Post updatedPost = postService.updateCompletion(postId, url);
 		return new ResponseEntity<>(updatedPost, HttpStatus.OK);
 	}
 
 	@PutMapping("/{postID}/flag")
-	public ResponseEntity<Post> flagPost(@PathVariable final String postID) {
+	public ResponseEntity<Post> flagPost(@PathVariable final String postID, @RequestBody final String message) {
 		UUID postId = UUID.fromString(postID);
-		Post flaggedPost = postService.flagPost(postId);
+		Post flaggedPost = postService.flagPost(postId, message);
 		return new ResponseEntity<>(flaggedPost, HttpStatus.OK);
 	}
 }

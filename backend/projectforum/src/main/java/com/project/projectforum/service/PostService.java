@@ -43,16 +43,22 @@ public class PostService {
 		postRepository.deleteById(postID);
 	}
 
-	public Post updateCompletion(UUID postID) {
+	public Post updateCompletion(UUID postID, String url) {
 		Post post = postRepository.findById(postID).orElseThrow(() -> new PostNotFoundException(postID));
 		post.setIsCompleted(!post.getIsCompleted());
+		if (post.getIsCompleted()) {
+			post.setCompletedURL(url);
+		} else {
+			post.setCompletedURL(null);
+		}
 		postRepository.save(post);
 		return post;
 	}
 
-	public Post flagPost(UUID postID) {
+	public Post flagPost(UUID postID, String message) {
 		Post post = postRepository.findById(postID).orElseThrow(() -> new PostNotFoundException(postID));
 		post.setIsFlagged(true);
+		post.setFlagType(message);
 		postRepository.save(post);
 		return post;
 	}

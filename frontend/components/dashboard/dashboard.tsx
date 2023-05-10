@@ -1,55 +1,34 @@
 import { 
-    Box, 
     Button, 
-    Card, 
     Container, 
     Dialog, 
     DialogActions, 
     DialogContent, 
     DialogContentText, 
     DialogTitle, 
-    Divider, 
     FormControl, 
     FormControlLabel, 
     FormLabel, 
     Grid, 
-    IconButton, 
     List, 
-    Modal, 
     PaletteColorOptions, 
-    Paper, 
     Radio, 
     RadioGroup, 
     TextField, 
     ThemeProvider, 
-    Tooltip, 
     Typography, 
     createTheme,
     useMediaQuery,
     useTheme,
 } from "@mui/material";
-import { styled } from '@mui/system';
 import AddIcon from '@mui/icons-material/Add';
-import CloseIcon from '@mui/icons-material/Close';
-import OpenInFullIcon from '@mui/icons-material/OpenInFull';
-import BookmarkIcon from '@mui/icons-material/Bookmark';
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
-import ReportIcon from '@mui/icons-material/Report';
-import ReportGmailerrorredIcon from '@mui/icons-material/ReportGmailerrorred';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import EmailIcon from '@mui/icons-material/Email';
-import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import React, { useCallback, useEffect, useState } from "react";
 import style from "./dashboard.module.scss"
 import CustomNavpanel from "../navpanel/navpanel";
 import { useUser } from "@descope/react-sdk";
 import User from "@/utils/models";
+import PostCard from "./postCard"
 import * as EmailValidator from 'email-validator';
-
-
-// const CARDS = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30];
 
 declare module '@mui/material/styles' {
     interface CustomPalette {
@@ -96,10 +75,9 @@ export default function Dashboard() {
     const theme = useTheme();
     const isMatch = useMediaQuery(theme.breakpoints.down("md"));
 
-    const [open, setOpen] = useState(false);
-    const [formDisplay, setFormDisplay] = useState(false);
-    const [gridOverFlow, setGridOverflow] = useState(false);
-
+    const [postModalDisplay, setPostModalDisplay] = useState(false);
+    const [githubFormDisplay, setGithubFormDisplay] = useState(false);
+    
     const [title, setTitle] = useState("");
     const [startedValue, setStartedValue] = useState("");
     const [description, setDescription] = useState("");
@@ -133,8 +111,18 @@ export default function Dashboard() {
         setContact(event.target.value);
     }
 
-    const handleOpen = () => {
-        setOpen(true);
+    function updatePostsArrays() {
+        getAllPosts().then((posts) => {
+            setAllPosts(posts);
+        });
+
+        getSavedPosts().then((posts) => {
+            setSavedPosts(posts);
+        });
+
+        getCreatedPosts().then((posts) => {
+            setCreatedPosts(posts);
+        });
     }
 
     const handlePost = async () => {
@@ -148,7 +136,7 @@ export default function Dashboard() {
         var validGithub: boolean = isGithubUrl(github);
         var validContact: boolean = EmailValidator.validate(contact);
 
-        if (title === "" || startedValue === "" || description === "" || (formDisplay && !validGithub) || ((contact !== "" && contact !== null && contact !== undefined) && !validContact)) {
+        if (title === "" || startedValue === "" || description === "" || (githubFormDisplay && !validGithub) || ((contact !== "" && contact !== null && contact !== undefined) && !validContact)) {
             setTitleError(title==="");
             setStartedError(startedValue==="");
             setDescriptionError(description==="");
@@ -177,68 +165,15 @@ export default function Dashboard() {
                 setCreatedPosts(posts);
             });
 
-            handleClose();
+            handlePostModalClose();
         }
     }
 
-    const handleSave = async (postId: string) => {
-        //save
-        const request = await fetch('/api/users/'+userData.userId+"/post/"+postId+"/save", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-        });
-        const response = await request.json();
-        console.log("saved: ", response);
-
-        getAllPosts().then((posts) => {
-            setAllPosts(posts);
-        });
-
-        getSavedPosts().then((posts) => {
-            setSavedPosts(posts);
-        });
+    const handlePostModalOpen = () => {
+        setPostModalDisplay(true);
     }
 
-    const handleUnsave = async (postId: string) => {
-        //unsave
-        const request = await fetch('/api/users/'+userData.userId+"/post/"+postId+"/unsave", {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-        });
-        const response = await request.text();
-        console.log(response);
-
-        getAllPosts().then((posts) => {
-            setAllPosts(posts);
-        });
-
-        getSavedPosts().then((posts) => {
-            setSavedPosts(posts);
-        });
-    }
-
-    const handleFlag = async (postId: string) => {
-        const request = await fetch('/api/posts/'+postId+"/flag", {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-        });
-        const response = await request.text();
-        console.log(response);
-
-        getAllPosts().then((posts) => {
-            setAllPosts(posts);
-        });
-
-        getSavedPosts().then((posts) => {
-            setSavedPosts(posts);
-        });
-
-        getCreatedPosts().then((posts) => {
-            setCreatedPosts(posts);
-        });
-    }
-
-    const handleClose = () => {
+    const handlePostModalClose = () => {
         setTitleError(false);
         setStartedError(false);
         setDescriptionError(false);
@@ -251,16 +186,16 @@ export default function Dashboard() {
         setGithub("");
         setContact("");
 
-        setOpen(false);
-        setFormDisplay(false);
+        setPostModalDisplay(false);
+        setGithubFormDisplay(false);
     }
 
-    const handleFormOn = () => {
-        setFormDisplay(true);
+    const handleGithubFormOn = () => {
+        setGithubFormDisplay(true);
     }
 
-    const handleFormOff = () => {
-        setFormDisplay(false); 
+    const handleGithubFormOff = () => {
+        setGithubFormDisplay(false); 
     }
 
     const getAllPosts = useCallback(async () => {
@@ -302,186 +237,35 @@ export default function Dashboard() {
         });
     }, [getAllPosts, getCreatedPosts, getSavedPosts, navState]);
 
-    // TODO: convert to functional component
-    function generateCard(
-        post: { 
-            id: string
-            title: string 
-            creator_name: string
-            description: string
-            is_started: boolean
-            github_url: string | null
-            creator_id: string
-            timestamp: string
-            is_completed: string
-            contact_info: string | null
-            is_flagged: boolean
-        }, 
-        index: number
-    ) {
-        return (
-            <div key={index} style={{paddingTop: "10px"}}>
-                <Card sx={{height: "400px"}}>
-                    <Grid container spacing={0} width={"100%"} padding="10px">
-                        <Grid item xs={12} sx={{textAlign: "right"}}>
-                            {post.creator_id===userData.userId ? (
-                                <Tooltip title="Delete post">
-                                    <IconButton>
-                                        <CloseIcon fontSize="medium" sx={{color: "gray"}} />
-                                    </IconButton>
-                                </Tooltip>
-                            ) : (
-                                <IconButton sx={{visibility: "hidden"}}>
-                                    <CloseIcon fontSize="medium" sx={{color: "gray", visibility: "hidden"}} />
-                                </IconButton>
-                            )}
-                        </Grid>
-                    </Grid>
-
-                    <Grid container spacing={0} width={"100%"} height={"240px"} padding="0px 20px" id="title_and_description" >
-                        <Grid item xs={12} zeroMinWidth height={"100%"} overflow="hidden">
-                            <Typography variant="h3" color="primary">
-                                {post.title} 
-                            </Typography>
-
-                            <Divider sx={{marginBottom: "20px"}} />
-
-                            <Typography variant="body1" sx={{overflowWrap: "break-word", whiteSpace: "pre-line"}}>
-                                {post.description}
-                            </Typography>
-                        </Grid>
-                    </Grid>
-
-                    <Grid container spacing={0} width={"100%"} height={"50px"} padding="0px 20px">
-                        <Grid item xs={12}>
-                            {post.is_started && (
-                                <div style={{display: "flex", alignItems: "center"}}>
-                                    <GitHubIcon fontSize="small" sx={{color: "#6e5494"}}/>
-                                    <Typography variant="body2" marginLeft="3px" sx={{color: "#6e5494", "&:hover": { color: "#483761" }}}>
-                                        <a href={post.github_url!} target="_blank" rel="noopener" >{post.github_url}</a>
-                                    </Typography>
-                                </div>
-                            )}
-
-                            {post.contact_info!==null && (
-                                <div style={{display: "flex", alignItems: "center"}}>
-                                    <EmailIcon fontSize="small"/>
-                                    <Typography variant="body2" marginLeft="3px">
-                                        {post.contact_info}
-                                    </Typography>
-                                </div>
-                            )}
-                        </Grid>
-                    </Grid>
-                    
-                    <Divider />
-
-                    <Grid container spacing={0} width={"100%"} alignItems="center" padding="5px 10px">
-                        <Grid item xs={7}>
-                            {post.is_completed ? (
-                                post.creator_id === userData.userId ?
-                                (
-                                    <Tooltip title="Mark incomplete">
-                                        <IconButton size="small">
-                                            <CheckCircleIcon color={"success"} fontSize="medium" />
-                                        </IconButton>
-                                    </Tooltip>
-                                ) : (
-                                    <Tooltip title="You do not have permission to mark this incomplete">
-                                        <IconButton size="small">
-                                            <CheckCircleIcon color={"success"} fontSize="medium" />
-                                        </IconButton>
-                                    </Tooltip>
-                                )
-                            ) : (
-                                <Tooltip title="Mark completed">
-                                    <IconButton size="small">
-                                        <CheckCircleOutlineIcon fontSize="medium" />
-                                    </IconButton>
-                                </Tooltip>
-                            )}
-
-                            {post.creator_id !== userData.userId && (
-                                savedPosts.length !== 0 ? (
-                                    savedPosts.map((p, index) => {
-                                            if (p.id === post.id) {
-                                                return( 
-                                                    <Tooltip title="Unsave">
-                                                        <IconButton size="small" onClick={() => handleUnsave(post.id)} >
-                                                            <BookmarkIcon key={index} fontSize="medium" color="info"  /> 
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                )
-                                            } else {
-                                                return( 
-                                                    <Tooltip title="Save">
-                                                        <IconButton size="small" onClick={() => handleSave(post.id)} >
-                                                            <BookmarkBorderIcon key={index} fontSize="medium" color="info" /> 
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                    
-                                                )
-                                            }
-                                    })
-                                ) : (
-                                    <Tooltip title="Save">
-                                        <IconButton size="small" onClick={() => handleSave(post.id)} >
-                                            <BookmarkBorderIcon fontSize="medium" color="info" />
-                                        </IconButton>
-                                    </Tooltip>
-                                )
-                            )}
-
-                            {/* TODO: Popup menu to indicate report reason: spam, inappropriate, violence or hate speech, illegal activity */}
-                            {post.is_flagged ? (
-                                <Tooltip title="Report status pending">
-                                    <IconButton size="small">
-                                        <ReportIcon fontSize="medium" color="error" />
-                                    </IconButton>
-                                </Tooltip>
-                            ) : (
-                                <Tooltip title="Report">
-                                    <IconButton size="small" onClick={() => handleFlag(post.id)}>
-                                        <ReportGmailerrorredIcon fontSize="medium" color="error" />
-                                    </IconButton>
-                                </Tooltip>
-                            )}
-
-                        </Grid>
-
-                        <Grid item container xs={5} alignItems="center">
-                            <Grid item xs={10}  sx={{textAlign: "right"}}>
-                                <Typography variant="body2">
-                                    {new Date(post.timestamp).toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" })}
-                                </Typography>
-                                <Typography variant="body2" color="primary">
-                                    {post.creator_name}
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={2}  sx={{textAlign: "right"}}>
-                                <Tooltip title="Open in full">
-                                    <IconButton size="small">
-                                        <OpenInFullIcon fontSize="medium" sx={{color: "gray"}} />
-                                    </IconButton>
-                                </Tooltip>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Card>
-            </div>
-        )
-    }
-
     const allPostsCards = allPosts.map((post, index) => (
-        !post.is_flagged && generateCard(post, index)
+        !post.is_flagged && 
+            <PostCard 
+                key={index}
+                post={post} 
+                index={index} 
+                updatePostsArrays={updatePostsArrays} 
+                savedPosts={savedPosts}
+            />
     ));
 
     const createdPostsCards = createdPosts.map((post, index) => (
-        !post.is_flagged && generateCard(post, index)
+        !post.is_flagged && 
+            <PostCard 
+                post={post} 
+                index={index} 
+                updatePostsArrays={updatePostsArrays} 
+                savedPosts={savedPosts}
+            />
     ))
 
     const savedPostsCards = savedPosts.map((post, index) => (
-        !post.is_flagged && generateCard(post, index)
+        !post.is_flagged &&
+            <PostCard 
+                post={post} 
+                index={index} 
+                updatePostsArrays={updatePostsArrays} 
+                savedPosts={savedPosts}
+            />
     ))
 
     return (
@@ -506,7 +290,7 @@ export default function Dashboard() {
                                 variant="contained" 
                                 color="post" 
                                 sx={{color: "white", textTransform: "capitalize", padding: "3% 10%"}}
-                                onClick={handleOpen}
+                                onClick={handlePostModalOpen}
                             >
                                 <AddIcon fontSize="small"/>
                                 <Typography fontWeight={"medium"}>
@@ -524,7 +308,7 @@ export default function Dashboard() {
                                 variant="contained" 
                                 color="post" 
                                 sx={{color: "white", textTransform: "capitalize", borderRadius: 300}}
-                                onClick={handleOpen}
+                                onClick={handlePostModalOpen}
                             >
                                     <AddIcon fontSize="large"/>
                             </Button>
@@ -546,8 +330,8 @@ export default function Dashboard() {
                 
 
                 <Dialog 
-                    open={open} 
-                    onClose={handleClose}
+                    open={postModalDisplay} 
+                    onClose={handlePostModalClose}
                     sx={{borderRadius: 7,}}
                     fullWidth
                 >
@@ -585,17 +369,17 @@ export default function Dashboard() {
                                 onChange={e => {setStartedValue(e.target.value); setStartedError(false)}}
                                 value={startedValue}
                             >
-                                <FormControlLabel value="Yes" control={<Radio />} label="Yes" onClick={handleFormOn}/>
-                                <FormControlLabel value="No" control={<Radio />} label="No" onClick={handleFormOff}/>
+                                <FormControlLabel value="Yes" control={<Radio />} label="Yes" onClick={handleGithubFormOn}/>
+                                <FormControlLabel value="No" control={<Radio />} label="No" onClick={handleGithubFormOff}/>
                             </RadioGroup>
                         </FormControl>
-                        {(formDisplay) &&
+                        {(githubFormDisplay) &&
                             <TextField
                                 required
-                                disabled={!formDisplay}
+                                disabled={!githubFormDisplay}
                                 //TODO: make error if displayed but empty
                                 value={github}
-                                error={formDisplay && githubError}
+                                error={githubFormDisplay && githubError}
                                 margin="none"
                                 id="github"
                                 label="GitHub URL"
@@ -658,7 +442,7 @@ export default function Dashboard() {
                     </DialogContent>
                     
                     <DialogActions>
-                        <Button onClick={handleClose} color="post">
+                        <Button onClick={handlePostModalClose} color="post">
                             <Typography>
                                 Cancel
                             </Typography>

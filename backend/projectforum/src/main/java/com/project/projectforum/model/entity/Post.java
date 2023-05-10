@@ -47,8 +47,12 @@ public class Post {
 	@NonNull
 	private Boolean isCompleted = false;
 
+	private String completedURL;
+
 	@NonNull
 	private Boolean isFlagged = false;
+
+	private String flagType;
 
 	@CreationTimestamp
 	private LocalDateTime timestamp;
