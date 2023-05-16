@@ -231,7 +231,7 @@ export default function PostCard(props: {
                                             onClose={handleDeletePostPopupClose}
                                         >
                                             <DialogTitle>
-                                                Are you sure you want to delete the project "{props.post.title}"?
+                                                Are you sure you want to delete the project &quot;{props.post.title}&quot;?
                                             </DialogTitle>
 
                                             <DialogActions>
@@ -333,7 +333,7 @@ export default function PostCard(props: {
                                             onClose={handleCompletedModalClose}
                                         >
                                             <DialogTitle>
-                                                Ready to call the project "{props.post.title}" finished? Awesome!
+                                                Ready to call the project &quot;{props.post.title}&quot; finished? Awesome!
                                                 <DialogContentText>
                                                     Paste the link to the product below so the creator can verify it!
                                                 </DialogContentText>
@@ -508,7 +508,7 @@ export default function PostCard(props: {
                                                                 onClose={handleDeletePostPopupClose}
                                                             >
                                                                 <DialogTitle>
-                                                                    Are you sure you want to delete the project "{props.post.title}"?
+                                                                    Are you sure you want to delete the project &quot;{props.post.title}&quot;?
                                                                 </DialogTitle>
 
                                                                 <DialogActions>
@@ -615,7 +615,7 @@ export default function PostCard(props: {
                                                                 onClose={handleCompletedModalClose}
                                                             >
                                                                 <DialogTitle>
-                                                                    Ready to call the project "{props.post.title}" finished? Awesome!
+                                                                    Ready to call the project &quot;{props.post.title}&quot; finished? Awesome!
                                                                     <DialogContentText>
                                                                         Paste the link to the product below so the creator can verify it!
                                                                     </DialogContentText>
