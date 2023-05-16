@@ -5,7 +5,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:slug*',
-        destination: 'ec2-3-80-132-185.compute-1.amazonaws.com/:slug*'
+        destination: 'http://ec2-3-80-132-185.compute-1.amazonaws.com/:slug*'
       },
     ]
   }
