@@ -13,48 +13,58 @@ import { GetServerSideProps } from "next";
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home({ data }: { data: string }) {
-  const { isAuthenticated } = useSession();
-  const { user } = useUser();
+  const { isAuthenticated, isSessionLoading } = useSession();
+  const { user, isUserLoading } = useUser();
 
   //might not need this
-  const router = useRouter();
+  // const router = useRouter();
 
   //might not need this
-  const handleSubmit = async (event: SyntheticEvent) => {
-    event.preventDefault();
+  // const handleSubmit = async (event: SyntheticEvent) => {
+  //   event.preventDefault();
 
-    const response = await fetch("/api/form", { method: "POST" });
+  //   const response = await fetch("/api/form", { method: "POST" });
 
-    const result = await response.json();
-    alert(`Result: ${result.data}`);
-  };
-  useEffect(() => {
-    console.log(user)
-  })
+  //   const result = await response.json();
+  //   alert(`Result: ${result.data}`);
+  // };
+  // useEffect(() => {
+  //   console.log(user)
+  // })
 
+  if (isSessionLoading || isUserLoading) {
+		return <p>Loading...</p>;
+	}
 
-  return (
-    <>
-      <Head>
-        <title>Project Forum</title>
-        <meta name="description" content="Forum for posting project ideas" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <CustomNavbar />
-      
-      <main className={styles.main}>
-
-        {isAuthenticated && (
-          <>
-            <Dashboard />
-          </>
-        )}
+  if (isAuthenticated) {
+    return (
+      <>
+        <Head>
+          <title>Project Forum</title>
+          <meta name="description" content="Forum for posting project ideas" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+        <CustomNavbar />
         
-      </main>
-    </>
-  )
+        <main className={styles.main}>
+  
+          {/* {isAuthenticated && ( */}
+            <>
+              <Dashboard />
+            </>
+          {/* )} */}
+          
+        </main>
+      </>
+    )
+  }
+
+  return (<p>You are not logged in</p>);
 }
+
+
+  
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const validated = await validateRequestSession(context.req);
