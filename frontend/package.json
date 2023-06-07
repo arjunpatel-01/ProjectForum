@@ -2,7 +2,7 @@
   "name": "projectforum",
   "version": "0.1.0",
   "private": true,
-  "proxy": "ec2-3-80-132-185.compute-1.amazonaws.com",
+  "proxy": "http://localhost:8080",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
