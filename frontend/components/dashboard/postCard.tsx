@@ -29,6 +29,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import EmailIcon from '@mui/icons-material/Email';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 
 import React, { useState } from "react";
 import { useUser } from "@descope/react-sdk";
@@ -221,7 +222,7 @@ export default function PostCard(props: {
                                 {props.post.creator_id===userData.userId ? (
                                     <>
                                         <Tooltip title="Delete post">
-                                            <IconButton onClick={handleDeletePostPopupOpen} >
+                                            <IconButton onClick={handleDeletePostPopupOpen} size="small" >
                                                 <DeleteIcon fontSize="medium" sx={{color: "gray"}} />
                                             </IconButton>
                                         </Tooltip>
@@ -249,7 +250,7 @@ export default function PostCard(props: {
                                         </Dialog>
                                     </>
                                 ) : (
-                                    <IconButton sx={{visibility: "hidden"}}>
+                                    <IconButton size="small" sx={{visibility: "hidden"}}>
                                         <DeleteIcon fontSize="medium" sx={{color: "gray", visibility: "hidden"}} />
                                     </IconButton>
                                 )}
@@ -270,7 +271,7 @@ export default function PostCard(props: {
                             </Grid>
                         </Grid>
 
-                        <Grid container spacing={0} width={"100%"} height={"70px"} padding="0px 20px">
+                        <Grid container spacing={0} width={"100%"} height={"70px"} marginTop={"6px"} padding="0px 20px">
                             <Grid item xs={12}>
                                 {props.post.is_started && (
                                     <div style={{display: "flex", alignItems: "center"}}>
@@ -373,26 +374,41 @@ export default function PostCard(props: {
                                 )}
 
                                 {props.post.creator_id !== userData.userId && (
+                                    (props.post.id in props.savedPosts) ? (
+                                        <Tooltip title="Unsave">
+                                            <IconButton size="small" onClick={handleUnsave} >
+                                                <BookmarkIcon fontSize="medium" color="info"  /> 
+                                            </IconButton>
+                                        </Tooltip>
+                                    ) : (
+                                        <Tooltip title="Save">
+                                            <IconButton size="small" onClick={handleSave} >
+                                                <BookmarkBorderIcon fontSize="medium" color="info" /> 
+                                            </IconButton>
+                                        </Tooltip>
+                                    )
+                                )}
+
+                                {/* {props.post.creator_id !== userData.userId && (
                                     props.savedPosts.length !== 0 ? (
                                         props.savedPosts.map((p: any, index: number) => {
-                                                if (p.id === props.post.id) {
-                                                    return( 
-                                                        <Tooltip key={index} title="Unsave">
-                                                            <IconButton size="small" onClick={handleUnsave} >
-                                                                <BookmarkIcon key={index} fontSize="medium" color="info"  /> 
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    )
-                                                } else {
-                                                    return( 
-                                                        <Tooltip key={index} title="Save">
-                                                            <IconButton size="small" onClick={handleSave} >
-                                                                <BookmarkBorderIcon key={index} fontSize="medium" color="info" /> 
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                        
-                                                    )
-                                                }
+                                            if (p.id === props.post.id) {
+                                                return( 
+                                                    <Tooltip key={index} title="Unsave">
+                                                        <IconButton size="small" onClick={handleUnsave} >
+                                                            <BookmarkIcon key={index} fontSize="medium" color="info"  /> 
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                )
+                                            } else {
+                                                return( 
+                                                    <Tooltip key={index} title="Save">
+                                                        <IconButton size="small" onClick={handleSave} >
+                                                            <BookmarkBorderIcon key={index} fontSize="medium" color="info" /> 
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                )
+                                            }
                                         })
                                     ) : (
                                         <Tooltip title="Save">
@@ -401,7 +417,7 @@ export default function PostCard(props: {
                                             </IconButton>
                                         </Tooltip>
                                     )
-                                )}
+                                )} */}
 
                                 {props.post.is_flagged ? (
                                     <Tooltip title="Report status pending">
@@ -461,6 +477,12 @@ export default function PostCard(props: {
                                         </Menu>
                                     </>
                                 )}
+
+                                <Tooltip title="Feature not yet available">
+                                        <IconButton size="small" >
+                                            <ChatBubbleOutlineIcon fontSize="medium" /> 
+                                        </IconButton>
+                                </Tooltip>
 
                             </Grid>
 
@@ -655,6 +677,22 @@ export default function PostCard(props: {
                                                     )}
 
                                                     {props.post.creator_id !== userData.userId && (
+                                                        (props.post.id in props.savedPosts) ? (
+                                                            <Tooltip title="Unsave">
+                                                                <IconButton size="small" onClick={handleUnsave} >
+                                                                    <BookmarkIcon fontSize="medium" color="info"  /> 
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        ) : (
+                                                            <Tooltip title="Save">
+                                                                <IconButton size="small" onClick={handleSave} >
+                                                                    <BookmarkBorderIcon fontSize="medium" color="info" /> 
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        )
+                                                    )}
+
+                                                    {/* {props.post.creator_id !== userData.userId && (
                                                         props.savedPosts.length !== 0 ? (
                                                             props.savedPosts.map((p: any, index: number) => {
                                                                     if (p.id === props.post.id) {
@@ -683,7 +721,7 @@ export default function PostCard(props: {
                                                                 </IconButton>
                                                             </Tooltip>
                                                         )
-                                                    )}
+                                                    )} */}
 
                                                     {props.post.is_flagged ? (
                                                         <Tooltip title="Report status pending">
