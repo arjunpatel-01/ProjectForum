@@ -91,8 +91,11 @@ export default function Dashboard() {
     const [contactError, setContactError] = useState(false);
 
     const [allPosts, setAllPosts] = useState([] as any[]);
+    const [testAll, setTestAll] = useState({} as any);
     const [createdPosts, setCreatedPosts] = useState([] as any[]);
+    const [testCreated, setTestCreated] = useState({} as any);
     const [savedPosts, setSavedPosts] = useState([] as any[]);
+    const [testSaved, setTestSaved] = useState({} as any);
     const [navState, setNavState] = useState("Home");
 
     const handleTitleChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
@@ -114,14 +117,29 @@ export default function Dashboard() {
     function updatePostsArrays() {
         getAllPosts().then((posts) => {
             setAllPosts(posts);
+            let testArrObj: any = {};
+            posts.forEach((post: any) => {
+                testArrObj[post.id] = post
+            })
+            setTestAll(testArrObj);
         });
 
         getSavedPosts().then((posts) => {
             setSavedPosts(posts);
+            let testArrObj: any = {};
+            posts.forEach((post: any) => {
+                testArrObj[post.id] = post
+            })
+            setTestSaved(testArrObj);
         });
 
         getCreatedPosts().then((posts) => {
             setCreatedPosts(posts);
+            let testArrObj: any = {};
+            posts.forEach((post: any) => {
+                testArrObj[post.id] = post
+            })
+            setTestCreated(testArrObj);
         });
     }
 
@@ -157,13 +175,7 @@ export default function Dashboard() {
             const response = await request.json();
             console.log("response: ", response);
 
-            getAllPosts().then((posts) => {
-                setAllPosts(posts);
-            });
-
-            getCreatedPosts().then((posts) => {
-                setCreatedPosts(posts);
-            });
+            updatePostsArrays();
 
             handlePostModalClose();
         }
@@ -226,16 +238,8 @@ export default function Dashboard() {
     }, []);
 
     useEffect(() => {
-        getAllPosts().then((posts) => {
-            setAllPosts(posts);
-        });
-        getCreatedPosts().then((posts) => {
-            setCreatedPosts(posts);
-        });
-        getSavedPosts().then((posts) => {
-            setSavedPosts(posts);
-        });
-    }, [getAllPosts, getCreatedPosts, getSavedPosts, navState]);
+        updatePostsArrays();
+    }, [getAllPosts, getCreatedPosts, getSavedPosts, updatePostsArrays, navState]);
 
     const allPostsCards = allPosts.map((post, index) => (
         !post.is_flagged && 
@@ -248,6 +252,17 @@ export default function Dashboard() {
             />
     ));
 
+    const allTestCards = Object.keys(testAll).map((property, index) => (
+        !testAll[property].is_flagged &&
+            <PostCard 
+                key={index}
+                post={testAll[property]} 
+                index={index} 
+                updatePostsArrays={updatePostsArrays} 
+                savedPosts={testSaved}
+            />
+    ))
+
     const createdPostsCards = createdPosts.map((post, index) => (
         !post.is_flagged && 
             <PostCard
@@ -256,6 +271,17 @@ export default function Dashboard() {
                 index={index} 
                 updatePostsArrays={updatePostsArrays} 
                 savedPosts={savedPosts}
+            />
+    ))
+
+    const createdTestCards = Object.keys(testCreated).map((property, index) => (
+        !testCreated[property].is_flagged &&
+            <PostCard 
+                key={index}
+                post={testAll[property]} 
+                index={index} 
+                updatePostsArrays={updatePostsArrays} 
+                savedPosts={testSaved}
             />
     ))
 
@@ -270,6 +296,17 @@ export default function Dashboard() {
             />
     ))
 
+    const savedTestCards = Object.keys(testSaved).map((property, index) => (
+        !testSaved[property].is_flagged &&
+            <PostCard 
+                key={index}
+                post={testAll[property]} 
+                index={index} 
+                updatePostsArrays={updatePostsArrays} 
+                savedPosts={testSaved}
+            />
+    ))
+
     return (
         <React.Fragment>
             <ThemeProvider theme={themeView}>
@@ -281,9 +318,9 @@ export default function Dashboard() {
                         
                         <Grid item xs={6} sx={{width: "100%", paddingX:"1%"}}>
                             <List className={style.invisiScroll} style={{marginTop: "10vh", maxHeight: "80vh", overflow: 'auto', justifyContent: "center", width: "100%", borderRadius: 3}}>
-                                {navState==="Home" && allPostsCards}
-                                {navState==="My Ideas" && createdPostsCards}
-                                {navState==="My Collection" && savedPostsCards}
+                                {navState==="Home" && allTestCards}
+                                {navState==="My Ideas" && createdTestCards}
+                                {navState==="My Collection" && savedTestCards}
                             </List>
                         </Grid>
 
@@ -302,6 +339,11 @@ export default function Dashboard() {
                         </Grid>
                     </Grid>
                 ) : (
+                    /*
+                    ////////////////////////////////////////////////////////////////
+                    /////////////////////////////MOBILE/////////////////////////////
+                    ////////////////////////////////////////////////////////////////
+                    */
                     <Container sx={{width: "100%"}}>
                         <CustomNavpanel navState={navState} setNavState={setNavState}/>
 
@@ -319,9 +361,9 @@ export default function Dashboard() {
                         <Grid container spacing={0} width={"100%"} overflow={"hidden"} justifyContent="center">
                             <Grid item xs={10} sx={{width: "100%", paddingX:"1%"}}>
                                 <List className={style.invisiScroll} style={{marginTop: "2vh", maxHeight: "80vh", overflow: 'auto', justifyContent: "center", width: "100%", borderRadius: 3}}>
-                                    {navState==="Home" && allPostsCards}
-                                    {navState==="My Ideas" && createdPostsCards}
-                                    {navState==="My Collection" && savedPostsCards}
+                                    {navState==="Home" && allTestCards}
+                                    {navState==="My Ideas" && createdTestCards}
+                                    {navState==="My Collection" && savedTestCards}
                                 </List>
                             </Grid>
                         </Grid>
