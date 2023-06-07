@@ -56,7 +56,7 @@ export default function AccountMenu() {
         document.cookie = "DSR=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     
         logout();
-        router.push("/");
+        router.push("/login");
     }, [logout, router]);
 
     return (

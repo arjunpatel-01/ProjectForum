@@ -9,6 +9,7 @@ import { SyntheticEvent, useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 import { getSessionToken, useDescope, useSession, useUser } from "@descope/react-sdk";
 import { GetServerSideProps } from "next";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -33,7 +34,7 @@ export default function Home({ data }: { data: string }) {
   // })
 
   if (isSessionLoading || isUserLoading) {
-		return <p>Loading...</p>;
+		return <CircularProgress />;
 	}
 
   if (isAuthenticated) {
@@ -60,7 +61,7 @@ export default function Home({ data }: { data: string }) {
     )
   }
 
-  return (<p>You are not logged in</p>);
+  return (<CircularProgress />);
 }
 
 
