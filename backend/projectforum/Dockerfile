@@ -10,4 +10,7 @@ ARG JAR_FILE=build/libs/*.jar
 # Copy the JAR
 COPY ${JAR_FILE} app.jar
 # Set ENTRYPOINT in exec form to run the container as an executable
+
+EXPOSE 8080
+
 ENTRYPOINT ["java","-jar","/app.jar"]
