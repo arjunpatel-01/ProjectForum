@@ -28,7 +28,7 @@ export default function CustomNavbar() {
                     { isMatch ? (
                         <div style={{display: "grid", width: "100%", justifyItems: "center"}}>
                             <Typography sx={{ fontSize: "2rem", color: "black"}}>
-                                IDEA SHARE
+                                NAME: TBD
                             </Typography>
                             <DrawerComp />
                         </div>
@@ -38,7 +38,7 @@ export default function CustomNavbar() {
                                 <Image src="/Logo.png" alt="Logo" width={60} height={60}/>
                             </Link>
                             <Typography sx={{ fontSize: "1.5rem", marginLeft: "1%", color: "black"}}>
-                                    IDEA SHARE
+                                    NAME: TBD
                             </Typography>
                             <AccountMenu />
                         </>

@@ -10,8 +10,28 @@ import { useRouter } from "next/router";
 import { getSessionToken, useDescope, useSession, useUser } from "@descope/react-sdk";
 import { GetServerSideProps } from "next";
 import CircularProgress from '@mui/material/CircularProgress';
+import { Grid, PaletteColorOptions, createTheme, ThemeProvider } from '@mui/material'
+import React from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
+
+declare module '@mui/material/styles' {
+  interface CustomPalette {
+      post: PaletteColorOptions;
+  }
+  interface Palette extends CustomPalette {}
+  interface PaletteOptions extends CustomPalette {}
+}
+
+const { palette } = createTheme();
+const { augmentColor } = palette;
+const createColor = (mainColor: string) => augmentColor({ color: { main: mainColor } });
+const themeView = createTheme({
+    palette: {
+        post: createColor('#DF9090'),
+        primary: createColor('#DF9090')
+    }
+});
 
 export default function Home({ data }: { data: string }) {
   const { isAuthenticated, isSessionLoading } = useSession();
@@ -34,14 +54,29 @@ export default function Home({ data }: { data: string }) {
   // })
 
   if (isSessionLoading || isUserLoading) {
-		return <CircularProgress />;
+		return (
+      <React.Fragment>
+        <ThemeProvider theme={themeView}>
+          <Grid 
+            container 
+            direction="row" 
+            justifyContent="center" 
+            alignItems="center" 
+            spacing={0} 
+            width={"100vw"} 
+            height={"100vh"}>
+              <CircularProgress color='primary'/>
+          </Grid>
+        </ThemeProvider>
+      </React.Fragment>
+    );
 	}
 
   if (isAuthenticated) {
     return (
       <>
         <Head>
-          <title>Project Forum</title>
+          <title>Name: TBD</title>
           <meta name="description" content="Forum for posting project ideas" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link rel="icon" href="/favicon.ico" />
@@ -61,7 +96,22 @@ export default function Home({ data }: { data: string }) {
     )
   }
 
-  return (<CircularProgress />);
+  return (
+    <React.Fragment>
+      <ThemeProvider theme={themeView}>
+        <Grid 
+          container 
+          direction="row" 
+          justifyContent="center" 
+          alignItems="center" 
+          spacing={0} 
+          width={"100vw"} 
+          height={"100vh"}>
+            <CircularProgress color='primary'/>
+        </Grid>
+      </ThemeProvider>
+    </React.Fragment>
+  );
 }
 
 
