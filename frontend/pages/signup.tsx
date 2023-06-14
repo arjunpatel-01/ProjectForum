@@ -10,7 +10,7 @@ export default function Login() {
     return (
         <>
             <Head>
-                <title>Project Forum Sign up</title>
+                <title>Sign up</title>
                 <meta name="description" content="Sign up page for project forum app" />
                 <link rel="icon" href="/assets/favicon.ico" />
             </Head>

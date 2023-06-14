@@ -1,5 +1,6 @@
 import { 
     Button, 
+    Card, 
     Container, 
     Dialog, 
     DialogActions, 
@@ -90,12 +91,9 @@ export default function Dashboard() {
     const [githubError, setGithubError] = useState(false);
     const [contactError, setContactError] = useState(false);
 
-    const [allPosts, setAllPosts] = useState([] as any[]);
-    const [testAll, setTestAll] = useState({} as any);
-    const [createdPosts, setCreatedPosts] = useState([] as any[]);
-    const [testCreated, setTestCreated] = useState({} as any);
-    const [savedPosts, setSavedPosts] = useState([] as any[]);
-    const [testSaved, setTestSaved] = useState({} as any);
+    const [allPosts, setAllPosts] = useState({} as any);
+    const [createdPosts, setCreatedPosts] = useState({} as any);
+    const [savedPosts, setSavedPosts] = useState({} as any);
     const [navState, setNavState] = useState("Home");
 
     const handleTitleChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
@@ -116,30 +114,30 @@ export default function Dashboard() {
 
     function updatePostsArrays() {
         getAllPosts().then((posts) => {
-            setAllPosts(posts);
+            // setAllPosts(posts);
             let testArrObj: any = {};
             posts.forEach((post: any) => {
                 testArrObj[post.id] = post
             })
-            setTestAll(testArrObj);
+            setAllPosts(testArrObj);
         });
 
         getSavedPosts().then((posts) => {
-            setSavedPosts(posts);
+            // setSavedPosts(posts);
             let testArrObj: any = {};
             posts.forEach((post: any) => {
                 testArrObj[post.id] = post
             })
-            setTestSaved(testArrObj);
+            setSavedPosts(testArrObj);
         });
 
         getCreatedPosts().then((posts) => {
-            setCreatedPosts(posts);
+            // setCreatedPosts(posts);
             let testArrObj: any = {};
             posts.forEach((post: any) => {
                 testArrObj[post.id] = post
             })
-            setTestCreated(testArrObj);
+            setCreatedPosts(testArrObj);
         });
     }
 
@@ -239,71 +237,39 @@ export default function Dashboard() {
 
     useEffect(() => {
         updatePostsArrays();
-    }, [getAllPosts, getCreatedPosts, getSavedPosts, updatePostsArrays, navState]);
+    }, []);
 
-    const allPostsCards = allPosts.map((post, index) => (
-        !post.is_flagged && 
+
+    const allPostsCards = Object.keys(allPosts).map((property, index) => (
+        !allPosts[property].is_flagged &&
             <PostCard 
                 key={index}
-                post={post} 
-                index={index} 
-                updatePostsArrays={updatePostsArrays} 
-                savedPosts={savedPosts}
-            />
-    ));
-
-    const allTestCards = Object.keys(testAll).map((property, index) => (
-        !testAll[property].is_flagged &&
-            <PostCard 
-                key={index}
-                post={testAll[property]} 
-                index={index} 
-                updatePostsArrays={updatePostsArrays} 
-                savedPosts={testSaved}
-            />
-    ))
-
-    const createdPostsCards = createdPosts.map((post, index) => (
-        !post.is_flagged && 
-            <PostCard
-                key={index}
-                post={post} 
+                post={allPosts[property]} 
                 index={index} 
                 updatePostsArrays={updatePostsArrays} 
                 savedPosts={savedPosts}
             />
     ))
 
-    const createdTestCards = Object.keys(testCreated).map((property, index) => (
-        !testCreated[property].is_flagged &&
+    const createdPostsCards = Object.keys(createdPosts).map((property, index) => (
+        !createdPosts[property].is_flagged &&
             <PostCard 
                 key={index}
-                post={testAll[property]} 
-                index={index} 
-                updatePostsArrays={updatePostsArrays} 
-                savedPosts={testSaved}
-            />
-    ))
-
-    const savedPostsCards = savedPosts.map((post, index) => (
-        !post.is_flagged &&
-            <PostCard 
-                key={index}
-                post={post} 
+                post={allPosts[property]} 
                 index={index} 
                 updatePostsArrays={updatePostsArrays} 
                 savedPosts={savedPosts}
             />
     ))
 
-    const savedTestCards = Object.keys(testSaved).map((property, index) => (
-        !testSaved[property].is_flagged &&
+    const savedPostsCards = Object.keys(savedPosts).map((property, index) => (
+        !savedPosts[property].is_flagged &&
             <PostCard 
                 key={index}
-                post={testAll[property]} 
+                post={allPosts[property]} 
                 index={index} 
                 updatePostsArrays={updatePostsArrays} 
-                savedPosts={testSaved}
+                savedPosts={savedPosts}
             />
     ))
 
@@ -318,9 +284,9 @@ export default function Dashboard() {
                         
                         <Grid item xs={6} sx={{width: "100%", paddingX:"1%"}}>
                             <List className={style.invisiScroll} style={{marginTop: "10vh", maxHeight: "80vh", overflow: 'auto', justifyContent: "center", width: "100%", borderRadius: 3}}>
-                                {navState==="Home" && allTestCards}
-                                {navState==="My Ideas" && createdTestCards}
-                                {navState==="My Collection" && savedTestCards}
+                                {navState==="Home" && allPostsCards}
+                                {navState==="My Ideas" && createdPostsCards}
+                                {navState==="My Collection" && savedPostsCards}
                             </List>
                         </Grid>
 
@@ -336,6 +302,11 @@ export default function Dashboard() {
                                     Post a New Idea
                                 </Typography>
                             </Button>
+                            <Typography paddingX={"5%"} marginX={"15%"} marginTop={"30vh"} border={"dashed"} borderColor={"gray"} color="gray">
+                                This is still a work-in-progress. 
+                                Title and designs are not finalized, so please send any suggestions you may have for improvement to arjun.patel23@utexas.edu. 
+                                This app is not yet mobile-friendly.
+                            </Typography>
                         </Grid>
                     </Grid>
                 ) : (
@@ -361,9 +332,9 @@ export default function Dashboard() {
                         <Grid container spacing={0} width={"100%"} overflow={"hidden"} justifyContent="center">
                             <Grid item xs={10} sx={{width: "100%", paddingX:"1%"}}>
                                 <List className={style.invisiScroll} style={{marginTop: "2vh", maxHeight: "80vh", overflow: 'auto', justifyContent: "center", width: "100%", borderRadius: 3}}>
-                                    {navState==="Home" && allTestCards}
-                                    {navState==="My Ideas" && createdTestCards}
-                                    {navState==="My Collection" && savedTestCards}
+                                    {navState==="Home" && allPostsCards}
+                                    {navState==="My Ideas" && createdPostsCards}
+                                    {navState==="My Collection" && savedPostsCards}
                                 </List>
                             </Grid>
                         </Grid>
@@ -470,19 +441,6 @@ export default function Dashboard() {
                             color="primary"
                             onChange={handleContactChange}
                         />
-
-                        {/* <FormControl required sx={{ marginTop: "5%" }}>
-                            <FormLabel id="anonymous">Would you like to post anonymously?</FormLabel>
-                            <RadioGroup
-                                row
-                                aria-labelledby="Anonymous? Radio Buttons Group Label"
-                                name="anonymous"
-                                color="primary"
-                            >
-                                <FormControlLabel value="yes" control={<Radio />} label="Yes"/>
-                                <FormControlLabel value="no" control={<Radio />} label="No"/>
-                            </RadioGroup>
-                        </FormControl> */}
                     </DialogContent>
                     
                     <DialogActions>

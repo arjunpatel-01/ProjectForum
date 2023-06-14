@@ -8,7 +8,7 @@ export default function Login() {
     return (
         <>
             <Head>
-                <title>Project Forum Log in</title>
+                <title>Log in</title>
                 <meta name="description" content="Log in page for project forum app" />
                 <link rel="icon" href="/assets/favicon.ico" />
             </Head>

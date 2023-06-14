@@ -202,6 +202,8 @@ export default function PostCard(props: {
     }
 
     const handleDelete = async () => {
+        handleDeletePostPopupClose();
+        
         const request = await fetch('/api/posts/'+props.post.id, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
@@ -209,7 +211,7 @@ export default function PostCard(props: {
         const response = await request.text();
         console.log(response);
 
-        props.updatePostsArrays();
+        props.updatePostsArrays();        
     }
 
     return (
@@ -389,36 +391,6 @@ export default function PostCard(props: {
                                     )
                                 )}
 
-                                {/* {props.post.creator_id !== userData.userId && (
-                                    props.savedPosts.length !== 0 ? (
-                                        props.savedPosts.map((p: any, index: number) => {
-                                            if (p.id === props.post.id) {
-                                                return( 
-                                                    <Tooltip key={index} title="Unsave">
-                                                        <IconButton size="small" onClick={handleUnsave} >
-                                                            <BookmarkIcon key={index} fontSize="medium" color="info"  /> 
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                )
-                                            } else {
-                                                return( 
-                                                    <Tooltip key={index} title="Save">
-                                                        <IconButton size="small" onClick={handleSave} >
-                                                            <BookmarkBorderIcon key={index} fontSize="medium" color="info" /> 
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                )
-                                            }
-                                        })
-                                    ) : (
-                                        <Tooltip title="Save">
-                                            <IconButton size="small" onClick={handleSave} >
-                                                <BookmarkBorderIcon fontSize="medium" color="info" />
-                                            </IconButton>
-                                        </Tooltip>
-                                    )
-                                )} */}
-
                                 {props.post.is_flagged ? (
                                     <Tooltip title="Report status pending">
                                         <IconButton size="small">
@@ -478,7 +450,7 @@ export default function PostCard(props: {
                                     </>
                                 )}
 
-                                <Tooltip title="Feature not yet available">
+                                <Tooltip title="Comment feature not yet available">
                                         <IconButton size="small" >
                                             <ChatBubbleOutlineIcon fontSize="medium" /> 
                                         </IconButton>
@@ -691,37 +663,6 @@ export default function PostCard(props: {
                                                             </Tooltip>
                                                         )
                                                     )}
-
-                                                    {/* {props.post.creator_id !== userData.userId && (
-                                                        props.savedPosts.length !== 0 ? (
-                                                            props.savedPosts.map((p: any, index: number) => {
-                                                                    if (p.id === props.post.id) {
-                                                                        return( 
-                                                                            <Tooltip key={index} title="Unsave">
-                                                                                <IconButton size="small" onClick={handleUnsave} >
-                                                                                    <BookmarkIcon key={index} fontSize="medium" color="info"  /> 
-                                                                                </IconButton>
-                                                                            </Tooltip>
-                                                                        )
-                                                                    } else {
-                                                                        return( 
-                                                                            <Tooltip key={index} title="Save">
-                                                                                <IconButton size="small" onClick={handleSave} >
-                                                                                    <BookmarkBorderIcon key={index} fontSize="medium" color="info" /> 
-                                                                                </IconButton>
-                                                                            </Tooltip>
-                                                                            
-                                                                        )
-                                                                    }
-                                                            })
-                                                        ) : (
-                                                            <Tooltip title="Save">
-                                                                <IconButton size="small" onClick={handleSave} >
-                                                                    <BookmarkBorderIcon fontSize="medium" color="info" />
-                                                                </IconButton>
-                                                            </Tooltip>
-                                                        )
-                                                    )} */}
 
                                                     {props.post.is_flagged ? (
                                                         <Tooltip title="Report status pending">
