@@ -304,7 +304,8 @@ export default function Dashboard() {
                             </Button>
                             <Typography paddingX={"5%"} marginX={"15%"} marginTop={"30vh"} border={"dashed"} borderColor={"gray"} color="gray">
                                 This is still a work-in-progress. 
-                                Title and designs are not finalized, so please send any suggestions you may have for improvement to arjun.patel23@utexas.edu. 
+                                Title and designs are not finalized, so please send any suggestions you may have for improvement to arjun.patel23@utexas.edu.
+                                There are definitely still bugs and incomplete sections. Please be patient while those get fixed up! 
                                 This app is not yet mobile-friendly.
                             </Typography>
                         </Grid>
