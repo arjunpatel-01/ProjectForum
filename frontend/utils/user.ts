@@ -2,12 +2,12 @@ import { RepeatOneSharp } from "@mui/icons-material";
 import User from "./models";
 
 const addUser = async (user: User) => {
-    console.log("User's ID: ", user.userId);
+    // console.log("User's ID: ", user.userId);
     const requestUsers = await fetch("/api/users", {
         method: 'GET',
     });
     const responseUsers = await requestUsers.json();
-    console.log(responseUsers);
+    // console.log(responseUsers);
 
     var alreadyAdded: boolean = false;
     for (let i = 0; i < responseUsers.length; i++) {
@@ -15,7 +15,7 @@ const addUser = async (user: User) => {
             alreadyAdded = true;
         }
     }
-    console.log("alredyAdded: ", alreadyAdded);
+    // console.log("alredyAdded: ", alreadyAdded);
 
     if (!alreadyAdded) {
         const request = await fetch("/api/users", {
@@ -28,7 +28,7 @@ const addUser = async (user: User) => {
             })
         });
         const response = await request.json();
-        console.log(response);
+        // console.log(response);
     }
 }
 

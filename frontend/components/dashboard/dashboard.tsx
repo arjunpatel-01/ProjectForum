@@ -142,12 +142,12 @@ export default function Dashboard() {
     }
 
     const handlePost = async () => {
-        console.log("title: ", title);
-        console.log("started value: ", startedValue==="Yes");
-        console.log("github: ", github);
-        console.log("description: ", description);
-        console.log("contact: ", contact);
-        console.log(contact)
+        // console.log("title: ", title);
+        // console.log("started value: ", startedValue==="Yes");
+        // console.log("github: ", github);
+        // console.log("description: ", description);
+        // console.log("contact: ", contact);
+        // console.log(contact)
         var isGithubUrl = require('is-github-url')
         var validGithub: boolean = isGithubUrl(github);
         var validContact: boolean = EmailValidator.validate(contact);
@@ -171,7 +171,7 @@ export default function Dashboard() {
                 })
             });
             const response = await request.json();
-            console.log("response: ", response);
+            // console.log("response: ", response);
 
             updatePostsArrays();
 
@@ -344,6 +344,11 @@ export default function Dashboard() {
                     </Container>
                 )}
                 
+                {/*
+                    ////////////////////////////////////////////////////////////////
+                    /////////////////////////////POST MODAL/////////////////////////////
+                    ////////////////////////////////////////////////////////////////
+                */}
 
                 <Dialog 
                     open={postModalDisplay} 
