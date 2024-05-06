@@ -23,7 +23,7 @@
     "email-validator": "^2.0.4",
     "eslint": "8.37.0",
     "eslint-config-next": "13.2.4",
-    "http-proxy-middleware": "^2.0.6",
+    "http-proxy-middleware": "^3.0.0",
     "is-github-repo": "^1.0.0",
     "is-github-url": "^1.2.2",
     "mui": "^0.0.1",
