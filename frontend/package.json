@@ -21,7 +21,7 @@
     "@types/react": "18.0.31",
     "@types/react-dom": "18.0.11",
     "email-validator": "^2.0.4",
-    "eslint": "8.37.0",
+    "eslint": "8.57.0",
     "eslint-config-next": "13.2.4",
     "http-proxy-middleware": "^2.0.6",
     "is-github-repo": "^1.0.0",
