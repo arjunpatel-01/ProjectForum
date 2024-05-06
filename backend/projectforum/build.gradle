@@ -13,7 +13,7 @@ sourceCompatibility = '17'
 //	targetCompatibility = '1.8'
 //}
 
-def springCloudVersion = 'Hoxton.RC2'
+def springCloudVersion = '2023.0.1'
 def springCloudStarterAWSVersion = '2.2.0.RC2'
 
 configurations {
